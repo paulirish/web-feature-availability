@@ -17,7 +17,7 @@
       
         $("input[type=checkbox]").live('click', function() {
           var checked = $("input:checked").map(function(val, i) { return i.id; } );
-          var supportedBy = BrowserStats.browsers.getByFeature(checked, ["y"]);
+          var supportedBy = BrowserStats.browsers.getByFeature(checked, ["y", "y x"]);
 
           var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.browserShare; }, 0);
           $("#share").text(sum.toFixed(2));
