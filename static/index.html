@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="components/jquery/jquery.min.js"></script>    
+    <script src="components/underscore/underscore-min.js"></script>    
+  </head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="/browser-stats.js"></script>
+  <script>
+
+    $(function() {
+      BrowserStats.load(function(browsers) {
+        var features = browsers.features;
+        for(var feature in features) {
+          $("#features").append("<li><label for='" + feature + "'>" + features[feature].title + "</label><input type='checkbox' id='" + feature + "'/>")
+        }
+      
+        $("input[type=checkbox]").live('click', function() {
+          var checked = $("input:checked").map(function(val, i) { return i.id; } );
+          var supportedBy = BrowserStats.browsers.getByFeature(checked, ["y"]);
+
+          var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.browserShare; }, 0);
+          $("#share").text(sum.toFixed(2));
+          //drawPie( supportedBy.map(function(i) { return { browser: i, share: agents[i] / sum }; })); 
+        });
+      });
+    });
+
+    var drawPie = function(data) {
+      var width = 960,
+         height = 500,
+         radius = Math.min(width, height) / 2;
+
+      var color = d3.scale.ordinal()
+          .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+      var arc = d3.svg.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(0);
+
+      var pie = d3.layout.pie()
+          .sort(null)
+          .value(function(d) { return d.share; });
+
+      var svg = d3.select("body").append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+      var g = svg.selectAll(".arc")
+          .data(pie(data))
+          .enter().append("g")
+          .attr("class", "arc");
+
+      g.append("path")
+       .attr("d", arc)
+       .style("fill", function(d) { return color(d.share); });
+
+      g.append("text")
+       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+       .attr("dy", ".35em")
+       .style("text-anchor", "middle")
+       .text(function(d) { 
+         return d.data.browser; 
+       });
+  
+   };
+
+</script>
+
+  <style>
+    #features { float: left; }
+    #result { float: right; font-size:4em; position: fixed; right: 0;}
+    #share { font-weight: 700; }  
+  </style>
+  <body>
+   <ul id="features"></ul>
+   <div id="result"><span id="share">100</span>% of the webi
+      <div id="chart_div" style="width: 200px; height: 200px;"></div>
+   </div>
+  </body>
+</html>
