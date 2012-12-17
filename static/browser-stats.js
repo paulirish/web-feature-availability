@@ -3,11 +3,15 @@ var BrowserStats = (function() {
     var _agent = agent;
     var _Share;
     this.__defineGetter__("browser", function() {
-      return _;
+      return _agent.browser;
     });
 
     this.__defineGetter__("share", function() {
       return _agent.usage_global;
+    });
+
+    this.__defineGetter__("type", function() {
+      return _agent.type;
     });
 
     this.getVersionShare = function(version) {
@@ -34,7 +38,8 @@ var BrowserStats = (function() {
 
     this.getBrowser = function(key) {
       var ua = key.split("+");
-      return { "key": key, "browserShare": _agents[ua[0]].getVersionShare(ua[1]) };
+      var agent = _agents[ua[0]];
+      return { "key": key, "version": ua[1], "type": agent.type, "name": agent.browser , "browserShare": agent.getVersionShare(ua[1]) };
     };
 
     this.addFeature = function(feature, versions) {
@@ -57,11 +62,38 @@ var BrowserStats = (function() {
         }
       }
 
-      var browser_vers =  _.intersection.apply(this,output);
+      var browser_vers = _.intersection.apply(this,output);
       var self = this;
-      return _.map(browser_vers, function(i) { 
-        return self.getBrowser(i);
+      var aggregates = _.groupBy(browser_vers, function(i) { 
+        return self.getBrowser(i).name;
       });
+
+      return _.map(browser_vers, function(i) {
+        var b = self.getBrowser(i);
+        b.versions = _.map(aggregates[b.name], function(r) {return r.split('+')[1]});
+        return b;
+      });
+    };
+
+    this.browsersByFeature = function(features, states) {
+      return featuresByProperty.call(this, features, states, "name"); 
+    };
+
+    this.typesByFeature =  function(features, states) {
+      return featuresByProperty.call(this, features, states, "type"); 
+    };
+
+    var featuresByProperty = function(features, states, property) {
+      var supportedBy = this.getByFeature(features, states);
+      return _.map(
+        _.groupBy(supportedBy, function(i) { return i[property] }), 
+            function(i) {
+              return { 
+                "name": i[0][property],
+                "versions": i[0].versions,
+                "share": _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 )
+              }
+            });
     };
   }; 
 
