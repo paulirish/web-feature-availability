@@ -2,6 +2,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.css">
+    <link href='http://fonts.googleapis.com/css?family=Monofett' rel='stylesheet' type='text/css'>
+
     <script src="components/jquery/jquery.min.js"></script>    
     <script src="components/underscore/underscore-min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">   
@@ -16,7 +18,7 @@
         var features;
         var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
         for(var i = 0;feature=features[feats[i]]; i++) {
-          $("#features").append("<li><label for='" + feats[i] + "'>" + feature.title + "</label><input type='checkbox' id='" + feats[i] + "'/>")
+          $("#features").append("<li><input type='checkbox' id='" + feats[i] + "'/><label for='" + feats[i] + "'>" + feature.title + "</label>");
         }
       
         $("input[type=checkbox]").live('click', function() {
@@ -71,23 +73,78 @@
 </script>
 
   <style>
-    #features { float: left; }
-    #result { float: right; font-size:1em; position: fixed; right: 0;}
-    #share { font-weight: 700; }
-    #charts { font-size: 16px; }
+    html {
+      background-image: url('/images/lightpaperfibers.png');
+      background-repeat: repeat;
+      margin: 0 20% 0 20%;
+    }
+  
+    body {
+      background-color: transparent;
+      color: black;
+    }     
+
+    header {
+      background-color: black;
+      padding: 20px;
+      color: white;
+      font-weight: 400;
+      font-family: 'Monofett';
+    }
+
+    header h1 {
+      font-weight: 400;
+      font-size: 4em;
+    }
+
+    ul { 
+      margin: 0;
+    }
+
+    ul#features li {
+      list-style: none; 
+      float: left;
+    }
+
+    ul#features li label {
+      background-color: black;
+      color: white;
+      padding: 5px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    ul#features input[type=checkbox] {
+      display: none;
+    }
+
+    input[type=checkbox]:checked + label {
+      background-color: red !important;
+    }
+
+    thead {
+      text-transform: capitalize;
+    }
+    
+    #share { color: red; }
   </style>
   <body>
-   <ul id="features"></ul>
+
    <div id="result">
       <header>
-        <h1><span id="share">100</span>% of the web</h1>
+        <h1>Reaching <span id="share">100</span>% of the web</h1>
       </header>
       <section>
         <div id="#charts">
+          <h2>Device type split</h2>
           <div id="mobileDesktopSplit"></div>
+          <h2>Browser share</h2>
           <div id="totalShare"></div>
         </div>
       </section>
    </div>
+   <h2>Browser Features</h2>
+   <p>Select a range of Browser features that you would like to use in your app</p>
+   <ul id="features"></ul>
   </body>
 </html>
