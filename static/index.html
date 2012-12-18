@@ -39,9 +39,13 @@
         });
    
         window.addEventListener("hashchange", function() {
-          var feats = window.location.hash.substring(1).split(",");
-          updateShare(feats);
+          var urlFeats = window.location.hash.substring(1).split(",");
+          updateShare(urlFeats);
         });
+
+        var urlFeats = window.location.hash.substring(1).split(",");
+        $(_.toArray(_.map(urlFeats, function(f) { return "#" + f })).join()).prop("checked", "checked"); 
+        updateShare(urlFeats);
       });
 
       
