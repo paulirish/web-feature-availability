@@ -1,0 +1,14 @@
+{
+  "name": "d3",
+  "version": "2.10.3",
+  "main": "./d3.v2.js",
+  "gitHead": "41fece5a7d7f2280c4c160c7f52af91f87c0dc1e",
+  "readme": "# Data-Driven Documents\n\n**D3.js** is a JavaScript library for manipulating documents based on data. **D3** helps you bring data to life using HTML, SVG and CSS. D3’s emphasis on web standards gives you the full capabilities of modern browsers without tying yourself to a proprietary framework, combining powerful visualization components and a data-driven approach to DOM manipulation.\n\nWant to learn more? [See the wiki.](/mbostock/d3/wiki)\n",
+  "readmeFilename": "README.md",
+  "_id": "d3@2.10.3",
+  "description": "**D3.js** is a JavaScript library for manipulating documents based on data. **D3** helps you bring data to life using HTML, SVG and CSS. D3’s emphasis on web standards gives you the full capabilities of modern browsers without tying yourself to a proprietary framework, combining powerful visualization components and a data-driven approach to DOM manipulation.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mbostock/d3.git"
+  }
+}

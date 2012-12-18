@@ -4,12 +4,14 @@
     <link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.css">
     <link href='http://fonts.googleapis.com/css?family=Monofett' rel='stylesheet' type='text/css'>
 
+    <script src="browser-stats.js"></script>
+    <script src="components/d3/d3.v2.min.js"></script>
     <script src="components/jquery/jquery.min.js"></script>    
     <script src="components/underscore/underscore-min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">   
   </head>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="/browser-stats.js"></script>
+
+
   <script>
 
     $(function() {
@@ -30,7 +32,7 @@
           $("#share").text(sum.toFixed(2));
 
           // Version numbers aren't that interesting here.
-          drawTable("#totalShare",["name", "versions", "share"], supportedBy);
+          drawTable("#totalShare",["name", "since", "share"], supportedBy);
           drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(checked, ["y", "y x", "a", "a x"])); 
         });
       });
@@ -67,6 +69,7 @@
                       })
                       .enter()
                       .append("td")
+                         .classed("versions", function(d) { return d.column === "versions" })
                          .text(function(d) { return d.value; }) 
        
     };
@@ -132,6 +135,10 @@
 
     td {
       padding: 5px;
+    }
+
+    td.versions {
+      word-break: break-all;
     }
     
     #share { color: red; }
