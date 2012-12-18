@@ -22,6 +22,7 @@
         }
       
         var updateShare = function(features) {
+          if(features.length == 1 && features[0] === "")  return;
           var supportedBy = BrowserStats.browsers.browsersByFeature(features, ["y", "y x", "a", "a x"]);
 
           var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
