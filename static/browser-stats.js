@@ -2,25 +2,34 @@ var BrowserStats = (function() {
   var Browser = function(key, agent) {
     var _agent = agent;
     var _Share;
-    this.__defineGetter__("browser", function() {
-      return _agent.browser;
+
+    Object.defineProperty(this, "browser", {
+      "get": function() {
+        return _agent.browser;
+      }
     });
 
-    this.__defineGetter__("share", function() {
-      return _agent.usage_global;
+    Object.defineProperty(this, "share", {
+      "get": function() {
+        return _agent.usage_global;
+      }
     });
 
-    this.__defineGetter__("type", function() {
-      return _agent.type;
+    Object.defineProperty(this, "type", {
+      "get": function() {
+        return _agent.type;
+      }
     });
 
     this.getVersionShare = function(version) {
       return _agent.usage_global[version] || 0;
     }; 
 
-    this.__defineGetter__("totalShare", function() {
-      if(!!_Share == false) _Share = _.reduce(_agent.usage_global, function(memo, num){ return memo + num }, 0);
-      return _Share;
+    Object.defineProperty(this, "totalShare", {
+      "get": function() {
+        if(!!_Share == false) _Share = _.reduce(_agent.usage_global, function(memo, num){ return memo + num }, 0);
+        return _Share;
+      }
     });
   };
 
