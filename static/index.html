@@ -9,8 +9,6 @@
     <script src="components/jquery/jquery.min.js"></script>    
     <script src="components/underscore/underscore-min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">   
-  </head>
-
 
   <script>
 
@@ -23,19 +21,30 @@
           $("#features").append("<li><input type='checkbox' id='" + feats[i] + "'/><label for='" + feats[i] + "'>" + feature.title + "</label>");
         }
       
-        $("input[type=checkbox]").live('click', function() {
-          var checked = $("input:checked").map(function(val, i) { return i.id; } );
-
-          var supportedBy = BrowserStats.browsers.browsersByFeature(checked, ["y", "y x", "a", "a x"]);
+        var updateShare = function(features) {
+          var supportedBy = BrowserStats.browsers.browsersByFeature(features, ["y", "y x", "a", "a x"]);
 
           var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
           $("#share").text(sum.toFixed(2));
 
           // Version numbers aren't that interesting here.
           drawTable("#totalShare",["name", "since", "share"], supportedBy);
-          drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(checked, ["y", "y x", "a", "a x"])); 
+          drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(features, ["y", "y x", "a", "a x"])); 
+        };
+
+        var hash = window.location.hash;
+
+        $("input[type=checkbox]").live('click', function() { 
+           window.location.hash = $("input:checked").map(function(val, i) { return i.id; }).toArray().join(",");
+        });
+   
+        window.addEventListener("hashchange", function() {
+          var feats = window.location.hash.substring(1).split(",");
+          updateShare(feats);
         });
       });
+
+      
     });
 
     var drawTable = function(element, columns, data) {
@@ -143,6 +152,8 @@
     
     #share { color: red; }
   </style>
+
+  </head>
   <body>
 
    <div id="result">
