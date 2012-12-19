@@ -32,7 +32,7 @@
     var buildAdditionalFeatures = function(item) {
       // Features that are free.
       if(item.difference === 0) {
-        $("#free").append("<li data-share='" + item.actual + "'><input data-difference='" + item.difference + "' data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "'/><label for='" + item.id + "'>" + item.title + "</label>");
+        $("#free").append("<li data-share='" + item.actual + "'><input data-difference='" + item.difference + "' data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "freechk'/><label for='" + item.id + "freechk'>" + item.title + "</label>");
       }
       $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + (100 + item.difference) +", 70%, 50%, 1)"})
     }
@@ -50,7 +50,7 @@
         //  var feature;
           for(var i = 0;feature=feats[i]; i++) {
             var feat = features[feats[i]];
-            $("#features").append("<li><input data-feature='" + feat.id + "' type='checkbox' id='" + feat.id + "'/><label for='" + feat.id + "'>" + feat.title + "</label>");
+            $("#features").append("<li><input data-feature='" + feat.id + "' type='checkbox' id='" + feat.id + "chk'/><label for='" + feat.id + "chk'>" + feat.title + "</label>");
           }
         //}
       
@@ -67,33 +67,27 @@
           drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(requiredFeatures, ["y", "y x", "a", "a x"])); 
         };
 
-        var hash = window.location.hash;
-
         $("input[type=checkbox]").live('change', function() {
            var featureName = $(this).data("feature");
-
-           var featureList = _.uniq($("input:checked").map(function(val, i) { return $(i).data("feature"); }).toArray());
+           var checked = $(this).prop("checked");
+          
+           // toggle all the other checkboxes for the same feature 
+           $("input[data-feature='" + featureName + "']").prop("checked", (checked)? "checked" : false);
            
-           // There are multiple check boxes that point to this feature, so we need to ensure it is not in there.
-           if(this.checked == false) {
-            // uncheck others
-            $("input[data-feature='" + featureName  + "']").prop("checked", false); 
-            featureList = _.without(featureList, featureName);
-           }
-             
+           var featureList = _.uniq($("input:checked").map(function(val, i) { return $(i).data("feature"); }).toArray());
            window.location.hash = featureList.join(",");
         });
-   
+        
         window.addEventListener("hashchange", function() {
           var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
-          $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
           updateShare(urlFeats);
+          $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
         });
 
         var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
-        $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
-        updateShare(urlFeats);
 
+        updateShare(urlFeats);
+        $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
         $("#search").on('change', function() {
           if(this.value === "") return;
           var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
