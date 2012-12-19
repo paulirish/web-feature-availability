@@ -12,45 +12,104 @@
 
   <script>
 
+    var bindFeatureDataList = function(features, required, onItem) {
+      var onItem = onItem || function() {};
+      var supportedByCurrent = BrowserStats.browsers.browsersByFeature(required, ["y", "y x", "a", "a x"]);
+      var sumCurrent = _.reduce(supportedByCurrent, function(memo, num){ return memo + num.share; }, 0);
+      $("#featureList").html("");
+      $("#free").html("");
+      for(var i in features) {
+        var supportedBy = BrowserStats.browsers.browsersByFeature(required.concat(i), ["y", "y x", "a", "a x"]);
+	var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
+        var difference = sum - sumCurrent;
+        var actual = sumCurrent - sum;
+    
+        $("#featureList").append("<option value='" + i  + "'>" +  difference.toFixed(2)  + "%</option>");
+        onItem({"id": i, "title": i,"difference": difference, "actual": sum});
+      }
+    };
+
+    var buildAdditionalFeatures = function(item) {
+      // Features that are free.
+      if(item.difference === 0) {
+        $("#free").append("<li data-share='" + item.actual + "'><input data-difference='" + item.difference + "' data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "'/><label for='" + item.id + "'>" + item.title + "</label>");
+      }
+      $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + (100 + item.difference) +", 70%, 50%, 1)"})
+    }
+
     $(function() {
       BrowserStats.load(function(browsers) {
         var features = browsers.features;
-        var features;
+        _.each(features, function(itm, idx) { itm.id = idx });
         var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
-        for(var i = 0;feature=features[feats[i]]; i++) {
-          $("#features").append("<li><input type='checkbox' id='" + feats[i] + "'/><label for='" + feats[i] + "'>" + feature.title + "</label>");
-        }
+        //var featsByArea = _.groupBy(features, function(itm) { return itm.categories[0] || "Other"; });
+
+        //for(var f in featsByArea) {
+        //  $("#features").append("<h3>" + f  + "</h3><div id='group-" + f + "'><ul></ul></div>");
+        //  var group = $("#group-" + f + " ul");
+        //  var feature;
+          for(var i = 0;feature=feats[i]; i++) {
+            var feat = features[feats[i]];
+            $("#features").append("<li><input data-feature='" + feat.id + "' type='checkbox' id='" + feat.id + "'/><label for='" + feat.id + "'>" + feat.title + "</label>");
+          }
+        //}
       
-        var updateShare = function(features) {
-          if(features.length == 1 && features[0] === "")  return;
-          var supportedBy = BrowserStats.browsers.browsersByFeature(features, ["y", "y x", "a", "a x"]);
+        var updateShare = function(requiredFeatures) {
+          if(!!requiredFeatures === false)  return;
+          var supportedBy = BrowserStats.browsers.browsersByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
 
           var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
           $("#share").text(sum.toFixed(2));
 
+          bindFeatureDataList(features, requiredFeatures, buildAdditionalFeatures)
           // Version numbers aren't that interesting here.
           drawTable("#totalShare",["name", "since", "share"], supportedBy);
-          drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(features, ["y", "y x", "a", "a x"])); 
+          drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(requiredFeatures, ["y", "y x", "a", "a x"])); 
         };
 
         var hash = window.location.hash;
 
-        $("input[type=checkbox]").live('click', function() { 
-           window.location.hash = $("input:checked").map(function(val, i) { return i.id; }).toArray().join(",");
+        $("input[type=checkbox]").live('change', function() {
+           var featureName = $(this).data("feature");
+
+           var featureList = _.uniq($("input:checked").map(function(val, i) { return $(i).data("feature"); }).toArray());
+           
+           // There are multiple check boxes that point to this feature, so we need to ensure it is not in there.
+           if(this.checked == false) {
+            // uncheck others
+            $("input[data-feature='" + featureName  + "']").prop("checked", false); 
+            featureList = _.without(featureList, featureName);
+           }
+             
+           window.location.hash = featureList.join(",");
         });
    
         window.addEventListener("hashchange", function() {
-          var urlFeats = window.location.hash.substring(1).split(",");
+          var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
+          $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
           updateShare(urlFeats);
         });
 
-        var urlFeats = window.location.hash.substring(1).split(",");
-        $(_.toArray(_.map(urlFeats, function(f) { return "#" + f })).join()).prop("checked", "checked"); 
+        var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
+        $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
         updateShare(urlFeats);
-      });
 
-      
+        $("#search").on('change', function() {
+          if(this.value === "") return;
+          var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
+          urlFeats.push(this.value);
+          $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
+          window.location.hash = $("input:checked").map(function(val, i) { return $(i).data("feature"); }).toArray().join(",");
+          this.value = ""
+        });
+      }); 
     });
+
+    var getFeatureArrayFromString = function(str) {
+       var feats = str.split(",");
+       if(feats.length == 1 && feats[0] === "")  return [];
+       return feats
+    };
 
     var drawTable = function(element, columns, data) {
    
@@ -102,11 +161,9 @@
     }     
 
     header {
-      background-color: black;
       padding: 20px;
-      color: white;
+      margin-top: 50px;
       font-weight: 400;
-      font-family: 'Monofett';
     }
 
     header h1 {
@@ -118,14 +175,14 @@
       margin: 0;
     }
 
-    ul#features li {
+    ul#free li, #features li {
       list-style: none; 
       float: left;
+      color: white;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.4);
     }
 
-    ul#features li label {
-      background-color: black;
-      color: white;
+    ul#free li label, ul#features li label {
       padding: 5px;
       margin: 5px;
       cursor: pointer;
@@ -133,12 +190,11 @@
       transition: all 0.2s ease-in-out;
     }
 
-    ul#features input[type=checkbox] {
+    ul#free li input[type=checkbox], ul#features input[type=checkbox] {
       display: none;
     }
 
     input[type=checkbox]:checked + label {
-      background-color: rgba(255, 255, 255, 0.5) !important;
       outline: solid black 1px;
       color: black !important;
     }
@@ -154,6 +210,16 @@
     td.versions {
       word-break: break-all;
     }
+   
+    h2, h3 { clear: both; }
+  
+    input[type=search] {
+      font-size: 5em;
+      width: 100%;
+      height: 1.2em;
+      line-height: 1.2em;
+      box-sizing: border-box;
+    }
     
     #share { color: red; }
   </style>
@@ -163,9 +229,17 @@
 
    <div id="result">
       <header>
+        <input id="search" type="search" list="featureList" placeholder="Search for feature">
+        <datalist id="featureList"> </datalist>
+      </header>
+      <section class="hero-unit">
         <h1>Reaching <span id="share">100</span>% of the web</h1>
 	<p>Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
-      </header>
+      </section>
+      <section>
+        <h3>Free features</h3>
+        <ul id="free"></ul>
+      </section>
       <section>
         <div id="#charts">
           <h2>Device type split</h2>

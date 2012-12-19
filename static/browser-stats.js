@@ -20,6 +20,19 @@ var BrowserStats = (function() {
         return _agent.type;
       }
     });
+    
+    Object.defineProperty(this, "versionKeys", {
+      "get": function() {
+        var versions = [];
+        for(var v in _agent.versions) {
+          if(!!_agent.versions[v]) {
+            versions.push(key + "+" + _agent.versions[v]);
+          } 
+
+        }
+        return versions;
+      }
+    });
 
     this.getVersionShare = function(version) {
       return _agent.usage_global[version] || 0;
@@ -45,6 +58,8 @@ var BrowserStats = (function() {
       _agents[a] = new Browser(a, agent);
     };
 
+
+
     this.getBrowser = function(key) {
       var ua = key.split("+");
       var agent = _agents[ua[0]];
@@ -57,15 +72,25 @@ var BrowserStats = (function() {
 
     this.getByFeature = function(features, states) {
       var output = [];
-      for(var f = 0; f < features.length; f++) {
-        output.push([]);
-        var feat = features[f];
-        var feature = _features[feat];
-        for(var b in feature.stats) {
-          for(var v in feature.stats[b]) { 
-            var present = feature.stats[b][v];
-            if(states.indexOf(present) > -1) {
-              output[f].push(b + "+" + v);
+      if(!!features == false || features.length === 0) {
+        // get every single browser and version
+        var agents = [];
+        for(var a in _agents) {
+          agents = agents.concat(_agents[a].versionKeys);
+        }
+        output.push(agents); 
+      }
+      else {
+        for(var f = 0; f < features.length; f++) {
+          output.push([]);
+          var feat = features[f];
+          var feature = _features[feat];
+          for(var b in feature.stats) {
+            for(var v in feature.stats[b]) { 
+              var present = feature.stats[b][v];
+              if(states.indexOf(present) > -1) {
+                output[f].push(b + "+" + v);
+              }
             }
           }
         }
