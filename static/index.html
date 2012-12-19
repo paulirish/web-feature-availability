@@ -60,7 +60,7 @@
 
         var updateHeader = function(requiredFeatures) {
           if(!!requiredFeatures === false || requiredFeatures.length === 0) {
-            $("#usedFeatures").text("Nothing in particular");
+            $("#usedFeatures").text("Using nothing in particular");
           }
           else {
             $("#usedFeatures").html(_.map(requiredFeatures, function(i) {
