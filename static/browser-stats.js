@@ -122,14 +122,19 @@ var BrowserStats = (function() {
       var supportedBy = this.getByFeature(features, states);
       return _.map(
         _.groupBy(supportedBy, function(i) { return i[property] }), 
-            function(i) {
-              return { 
-                "name": i[0][property],
-                "versions": i[0].versions,
-                "since": _.min(i[0]._versions),
-                "share": _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 )
-              }
-            });
+          function(i) {
+            return { 
+              "name": i[0][property],
+              "versions": i[0].versions,
+              "since": _.min(i[0]._versions),
+              "share": _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 )
+            }
+          });
+    };
+
+    this.getFeature = function(featureName) {
+      return _features[featureName];
+
     };
   }; 
 

@@ -2,8 +2,6 @@
 <html>
   <head>
     <link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.css">
-    <link href='http://fonts.googleapis.com/css?family=Monofett' rel='stylesheet' type='text/css'>
-
     <script src="browser-stats.js"></script>
     <script src="components/d3/d3.v2.min.js"></script>
     <script src="components/jquery/jquery.min.js"></script>    
@@ -25,7 +23,7 @@
         var actual = sumCurrent - sum;
     
         $("#featureList").append("<option value='" + i  + "'>" +  difference.toFixed(2)  + "%</option>");
-        onItem({"id": i, "title": i,"difference": difference, "actual": sum});
+        onItem({"id": i, "title": BrowserStats.browsers.getFeature(i).title, "difference": difference, "actual": sum});
       }
     };
 
@@ -42,17 +40,10 @@
         var features = browsers.features;
         _.each(features, function(itm, idx) { itm.id = idx });
         var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
-        //var featsByArea = _.groupBy(features, function(itm) { return itm.categories[0] || "Other"; });
-
-        //for(var f in featsByArea) {
-        //  $("#features").append("<h3>" + f  + "</h3><div id='group-" + f + "'><ul></ul></div>");
-        //  var group = $("#group-" + f + " ul");
-        //  var feature;
-          for(var i = 0;feature=feats[i]; i++) {
-            var feat = features[feats[i]];
-            $("#features").append("<li><input data-feature='" + feat.id + "' type='checkbox' id='" + feat.id + "chk'/><label for='" + feat.id + "chk'>" + feat.title + "</label>");
-          }
-        //}
+        for(var i = 0;feature=feats[i]; i++) {
+          var feat = features[feats[i]];
+          $("#features").append("<li><input data-feature='" + feat.id + "' type='checkbox' id='" + feat.id + "chk'/><label for='" + feat.id + "chk'>" + feat.title + "</label>");
+        }
       
         var updateShare = function(requiredFeatures) {
           if(!!requiredFeatures === false)  return;
@@ -65,6 +56,18 @@
           // Version numbers aren't that interesting here.
           drawTable("#totalShare",["name", "since", "share"], supportedBy);
           drawTable("#mobileDesktopSplit",["name", "share"], BrowserStats.browsers.typesByFeature(requiredFeatures, ["y", "y x", "a", "a x"])); 
+        };
+
+        var updateHeader = function(requiredFeatures) {
+          if(!!requiredFeatures === false || requiredFeatures.length === 0) {
+            $("#usedFeatures").text("Nothing in particular");
+          }
+          else {
+            $("#usedFeatures").html(_.map(requiredFeatures, function(i) {
+               var item = BrowserStats.browsers.getFeature(i);
+               return "<li><input data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "usedchk'/><label for='" + item.id + "usedchk'>" + item.title + "</label>"
+            }).join(""));
+          }
         };
 
         $("input[type=checkbox]").live('change', function() {
@@ -81,13 +84,15 @@
         window.addEventListener("hashchange", function() {
           var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
           updateShare(urlFeats);
+          updateHeader(urlFeats);
           $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
         });
 
         var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
-
         updateShare(urlFeats);
+        updateHeader(urlFeats);
         $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
+        
         $("#search").on('change', function() {
           if(this.value === "") return;
           var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
@@ -169,14 +174,14 @@
       margin: 0;
     }
 
-    ul#free li, #features li {
+    ul#usedFeatures li, ul#free li, #features li {
       list-style: none; 
       float: left;
       color: white;
       text-shadow: 0 1px 1px rgba(0,0,0,0.4);
     }
 
-    ul#free li label, ul#features li label {
+    ul#usedFeatures li label, ul#free li label, ul#features li label {
       padding: 5px;
       margin: 5px;
       cursor: pointer;
@@ -184,13 +189,22 @@
       transition: all 0.2s ease-in-out;
     }
 
-    ul#free li input[type=checkbox], ul#features input[type=checkbox] {
+    ul#usedFeatures {
+      display: inline-block;
+    }
+ 
+    ul#usedFeatures li label {
+      background-color: hsl(200, 70%, 50%); 
+      outline: none;
+      color: white !important;
+    }
+
+    ul#usedFeatures li input[type=checkbox], ul#free li input[type=checkbox], ul#features input[type=checkbox] {
       display: none;
     }
 
     input[type=checkbox]:checked + label {
       outline: solid black 1px;
-      color: black !important;
     }
 
     thead {
@@ -228,7 +242,8 @@
       </header>
       <section class="hero-unit">
         <h1>Reaching <span id="share">100</span>% of the web</h1>
-	<p>Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
+        <h2><ul id="usedFeatures"></ul></h2>
+	<p stlye="clear:both;">Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
       </section>
       <section>
         <h3>Free features</h3>
