@@ -32,7 +32,7 @@
       if(item.difference === 0) {
         $("#free").append("<li data-share='" + item.actual + "'><input data-difference='" + item.difference + "' data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "freechk'/><label for='" + item.id + "freechk'>" + item.title + "</label>");
       }
-      $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + (100 + item.difference) +", 70%, 50%, 1)"})
+      $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + (100 + item.difference) +", 100%, 42%, 1)"})
     }
 
     $(function() {
@@ -199,7 +199,7 @@
     }
  
     ul#usedFeatures li label {
-      background-color: hsl(200, 70%, 50%); 
+      background-color: hsl(200, 100%, 42%); 
       outline: none;
       color: white !important;
     }
