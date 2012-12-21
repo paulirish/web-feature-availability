@@ -60,7 +60,7 @@
 
         var updateHeader = function(requiredFeatures) {
           if(!!requiredFeatures === false || requiredFeatures.length === 0) {
-            $("#usedFeatures").text("Using nothing in particular");
+            $("#usedFeatures").html("Using nothing");
           }
           else {
             $("#usedFeatures").html(_.map(requiredFeatures, function(i) {
@@ -148,13 +148,14 @@
 </script>
 
   <style>
-    html {
-      background-image: url('/images/lightpaperfibers.png');
-      background-repeat: repeat;
-      margin: 0 20% 0 20%;
+    
+    html { 
+        background-image: url('/images/lightpaperfibers.png');
+        background-repeat: repeat;
+        margin: 0 20% 0 20%;
     }
   
-    body {
+       body {
       background-color: transparent;
       color: black;
     }     
@@ -168,6 +169,10 @@
     header h1 {
       font-weight: 400;
       font-size: 4em;
+    }
+
+    .hero-unit {
+      padding: 30px;
     }
 
     ul { 
@@ -230,6 +235,33 @@
     }
     
     #share { color: red; }
+
+    @media all and (max-width:650px) { 
+      /*  Mobile */
+      html  {
+        background-color: white;
+        margin: 0 5px 0 5px;
+      }  
+
+      header {
+        margin-top: 5px;
+      }
+
+      ul { 
+        -webkit-columns: 2;
+        columns: 2;
+      }
+
+      ul li {
+        width: 100%;
+      }
+     
+      ul li label  {
+        padding: 10px;
+        font-size: 18px;
+      }
+    }
+  
   </style>
 
   </head>
@@ -237,7 +269,7 @@
 
    <div id="result">
       <header>
-        <input id="search" type="search" list="featureList" placeholder="Search for feature">
+        <input id="search" type="search" list="featureList" placeholder="Find feature">
         <datalist id="featureList"> </datalist>
       </header>
       <section class="hero-unit">
