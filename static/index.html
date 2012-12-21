@@ -209,7 +209,8 @@
     }
 
     input[type=checkbox]:checked + label {
-      outline: solid black 1px;
+      background-color: hsl(200, 100%, 42%) !important; 
+      box-shadow: inset 0px 0px 3px black;
     }
 
     thead {
@@ -287,10 +288,6 @@
 	<p stlye="clear:both;">Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
       </section>
       <section>
-        <h3>Free features</h3>
-        <ul id="free"></ul>
-      </section>
-      <section>
         <div id="#charts">
           <h2>Device type split</h2>
           <p>The ratio of the web that can use your chosen features split by Desktop and Mobile</p>
@@ -303,6 +300,10 @@
             <p>Choose some features.</p>
           </div>
         </div>
+      </section>
+      <section>
+        <h3>Free features</h3>
+        <ul id="free"></ul>
       </section>
    </div>
    <h2>Browser Features</h2>
