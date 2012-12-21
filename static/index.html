@@ -64,10 +64,10 @@
 
         var updateHeader = function(requiredFeatures) {
           if(!!requiredFeatures === false || requiredFeatures.length === 0) {
-            $("#usedFeatures").html("Using nothing");
+            $("#usedFeatures ul").html("no specific features");
           }
           else {
-            $("#usedFeatures").html(_.map(requiredFeatures, function(i) {
+            $("#usedFeatures ul").html(_.map(requiredFeatures, function(i) {
                var item = BrowserStats.browsers.getFeature(i);
                return "<li><input data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "usedchk'/><label for='" + item.id + "usedchk'>" + item.title + "</label>"
             }).join(""));
@@ -217,6 +217,12 @@
       font-weight: 400;
     }
 
+    #addfeatures {
+      clear: both;
+      padding: 0px;
+      margin-top: 30px;
+    }
+
     header h1 {
       font-weight: 400;
       font-size: 4em;
@@ -230,14 +236,14 @@
       margin: 0;
     }
 
-    ul#usedFeatures li, ul#free li, #features li {
+    #usedFeatures ul li, ul#free li, #features li {
       list-style: none; 
       float: left;
       color: white;
       text-shadow: 0 1px 1px rgba(0,0,0,0.4);
     }
 
-    ul#usedFeatures li label, ul#free li label, ul#features li label {
+    #usedFeatures ul li label, ul#free li label, ul#features li label {
       padding: 5px;
       margin: 5px;
       cursor: pointer;
@@ -245,17 +251,21 @@
       transition: all 0.2s ease-in-out;
     }
 
-    ul#usedFeatures {
+    #usedFeatures {
+
+    }
+
+    #usedFeatures ul{
       display: inline-block;
     }
  
-    ul#usedFeatures li label {
+    #usedFeatures ul li label {
       background-color: hsl(200, 100%, 42%); 
       outline: none;
       color: white !important;
     }
 
-    ul#usedFeatures li input[type=checkbox], ul#free li input[type=checkbox], ul#features input[type=checkbox] {
+    #usedFeatures ul li input[type=checkbox], ul#free li input[type=checkbox], ul#features input[type=checkbox] {
       display: none;
     }
 
@@ -279,7 +289,7 @@
     h2, h3 { clear: both; }
   
     input[type=search] {
-      font-size: 5em;
+      font-size: 3em;
       width: 100%;
       height: 1.2em;
       line-height: 1.2em;
@@ -298,10 +308,7 @@
         margin: 0 5px 0 5px;
       }  
 
-      header {
-        padding: 0px;
-        margin-top: 5px;
-      }
+      #addfeatures { display: none; }
 
       input[type=search] {
         font-size: 4em;
@@ -313,6 +320,13 @@
         -webkit-column-count: 2;
         -moz-column-count: 2;
         column-count: 2;
+      }
+
+      #usedFeatures ul {
+        display: block;
+        -webkit-column-count: 0;
+        -moz-column-count: 0;
+        column-count: 0;
       }
 
       ul li {
@@ -340,15 +354,17 @@
   <body>
 
    <div id="result">
-      <header>
-        <input id="search" type="search" list="featureList" placeholder="Find feature">
-        <datalist id="featureList"> </datalist>
-      </header>
       <section class="hero-unit">
-        <h1>Reaching <span id="share">100</span>% of the web</h1>
-        <h2><ul id="usedFeatures"></ul></h2>
+        <h2 id="usedFeatures">Using <ul></ul></h2>
+        <h1>You can reach <span id="share">100</span>% of web users</h1>
+        <div id="addfeatures">
+          <input id="search" type="search" list="featureList" placeholder="Add a feature">
+          <datalist id="featureList"> </datalist>
+        </div>
+        <br/>
 	<p stlye="clear:both;">Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
       </section>
+
       <section>
         <div id="#charts">
           <h2>Device type split</h2>
@@ -367,6 +383,7 @@
           </div>
         </div>
       </section>
+
       <section>
         <h3>Free features</h3>
         <ul id="free"></ul>
