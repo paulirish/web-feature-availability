@@ -50,7 +50,7 @@
           var supportedBy = BrowserStats.browsers.browsersByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
 
           var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
-          $("#share").text(sum.toFixed(2));
+          $("#share").css({"color": "hsla(" + Math.round((90 / 100) * sum ) + ", 100%, 42%, 1)"  }).text(sum.toFixed(2));
 
           bindFeatureDataList(features, requiredFeatures, buildAdditionalFeatures)
           // Version numbers aren't that interesting here.
@@ -234,7 +234,7 @@
       box-sizing: border-box;
     }
     
-    #share { color: red; }
+    #share { color: hsla(90, 100%, 42%, 1); }
 
     @media all and (max-width:650px) { 
       /*  Mobile */
