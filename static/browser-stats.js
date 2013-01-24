@@ -179,9 +179,14 @@ var BrowserStats = (function() {
     return output;
   };
 
-
-  return {
-    load: load,
-    get browsers () { return browsers; }
+  var returnObject = {
+	load: load,
   };
+  Object.defineProperty(returnObject, "browsers", {
+    "get": function() {
+      return browsers;
+    }
+  });
+
+  return returnObject;
 })();
