@@ -37,7 +37,10 @@
     }
 
     $(function() {
-      BrowserStats.load(function(browsers) {
+	  var deviceType = "all";
+	  deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": "all";
+  	  deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": "all";
+      BrowserStats.load(deviceType, function(browsers) {
         var features = browsers.features;
         _.each(features, function(itm, idx) { itm.id = idx });
         var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
@@ -187,14 +190,16 @@
                          return columns.map(function(col) {
                             if(col === "share") 
                               return {column: col, value:row[col].toFixed(3) + "%"};
-                            else
-                              return {column: col, value:row[col]};
+                            else if(col === "device")
+                              return {column: col, value: "<a href='on" + row[col] + ".iwanttouse.com/'>" + row[col] + "</a>"};
+                            else 
+                              return {column: col, value: row[col]};
                          })
                       })
                       .enter()
                       .append("td")
                          .classed("versions", function(d) { return d.column === "versions" })
-                         .text(function(d) { return d.value; }) 
+                         .html(function(d) { return d.value; }) 
        
     };
 </script>

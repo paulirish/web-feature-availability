@@ -138,20 +138,31 @@ var BrowserStats = (function() {
     };
   }; 
 
-  var load = function(callback) {
+  var load = function(type, callback) {
     callback = callback || function() {};
-    $.get("data.json").success(function(data) { parse(data, callback); });
+    $.get("data.json").success(function(data) { parse(type, data, callback); });
   };
  
   var browsers = new Browsers();
 
-  var parse = function(data, callback) {
+  var parse = function(type, data, callback) {
+	var validAgents = {};
     for(var a in data.agents) {
-      browsers.addBrowser(a, data.agents[a]);
+	  if(type == "all" || type == data.agents[a].type) {
+        browsers.addBrowser(a, data.agents[a]);
+        validAgents[a] = true;
+      }
     }
 
     for(var i in data.data) {
-      browsers.addFeature(i, data.data[i]);
+	  // Remove agents that are not part of the viewed set.
+	  var feature = data.data[i]
+	  for(var a in feature.stats) {
+		if(!!validAgents[a] == false) {
+		  feature.stats[a] = undefined
+		}
+	  }
+      browsers.addFeature(i, feature);
     }
 
     callback(browsers);
@@ -181,7 +192,12 @@ var BrowserStats = (function() {
 
   var returnObject = {
 	load: load,
+	browsers: function(type) {
+	  if(!!type == false) return browsers;
+	  else return
+	}
   };
+
   Object.defineProperty(returnObject, "browsers", {
     "get": function() {
       return browsers;
