@@ -11,16 +11,16 @@
 
   <script>
 
-    var bindFeatureDataList = function(features, required, onItem) {
+    var bindFeatureDataList = function(features, required, onItem, sumCurrent) {
       var onItem = onItem || function() {};
       var supportedByCurrent = BrowserStats.browsers.browsersByFeature(required, ["y", "y x", "a", "a x"]);
-      var sumCurrent = _.reduce(supportedByCurrent, function(memo, num){ return memo + num.share; }, 0);
+      //var sumCurrent = _.reduce(supportedByCurrent, function(memo, num){ return memo + num.share; }, 0);
       $("#featureList").html("");
       $("#free").html("");
       for(var i in features) {
         var supportedBy = BrowserStats.browsers.browsersByFeature(required.concat(i), ["y", "y x", "a", "a x"]);
 	var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
-        var difference = sum - sumCurrent;
+        var difference = (sum / sumCurrent) * 100;
         var actual = sumCurrent - sum;
     
         $("#featureList").append("<option value='" + i  + "'>" +  difference.toFixed(2)  + "%</option>");
@@ -30,15 +30,15 @@
 
     var buildAdditionalFeatures = function(item) {
       // Features that are free.
-      if(item.difference === 0) {
+      if(Math.round(100 - item.difference) === 0) {
         $("#free").append("<li data-share='" + item.actual + "'><input data-difference='" + item.difference + "' data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "freechk'/><label for='" + item.id + "freechk'>" + item.title + "</label>");
       }
-      $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + (100 + item.difference) +", 100%, 42%, 1)"})
+      $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + Math.round(item.difference) +", 100%, 42%, 1)"})
     }
 
     $(function() {
 	  var deviceType = "all";
-	  deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": "all";
+	  deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": deviceType;
   	  deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": deviceType;
           $("#charts").addClass(deviceType);
 
@@ -58,7 +58,7 @@
           var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
           $("#share").css({"color": "hsla(" + Math.round((90 / 100) * sum ) + ", 100%, 42%, 1)"  }).text(sum.toFixed(2));
 
-          bindFeatureDataList(features, requiredFeatures, buildAdditionalFeatures)
+          bindFeatureDataList(features, requiredFeatures, buildAdditionalFeatures, sum)
           // Version numbers aren't that interesting here.
           drawTable("#totalShare",["name", "since", "share"], supportedBy);
           drawPie("#totalShareChart",["name", "since", "share"], supportedBy);
