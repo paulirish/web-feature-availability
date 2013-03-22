@@ -40,6 +40,8 @@
 	  var deviceType = "all";
 	  deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": "all";
   	  deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": deviceType;
+          $("#charts").addClass(deviceType);
+
       BrowserStats.load(deviceType, function(browsers) {
         var features = browsers.features;
         _.each(features, function(itm, idx) { itm.id = idx });
@@ -353,6 +355,18 @@
       #mobileDesktopSplitChart { float: none; margin: auto; text-align: center; }
       #totalShareChart { float: none; margin: auto; text-align: center; }
     }
+
+    #charts.all .all {
+       display: block;
+    }
+
+    #charts.desktop .all {
+      display: none;
+    }
+
+    #charts.mobile .all {
+      display: none;
+    }
   
   </style>
 
@@ -372,13 +386,13 @@
       </section>
 
       <section>
-        <div id="#charts">
-          <h2>Device type split</h2>
-          <p>The ratio of the web that can use your chosen features split by Desktop and Mobile</p>
-          <div id="mobileDesktopSplit">
+        <div id="charts">
+          <h2 class="all">Device type split</h2>
+          <p class="all">The ratio of the web that can use your chosen features split by Desktop and Mobile</p>
+          <div id="mobileDesktopSplit" class="all">
             <p>Choose some features.</p>
           </div>
-          <div id="mobileDesktopSplitChart">
+          <div id="mobileDesktopSplitChart" class="all">
           </div>
           <h2>Browser share</h2>
           <p>The ratio of the entire web that can use your selected features aggregated by browser</p>
