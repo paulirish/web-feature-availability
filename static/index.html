@@ -39,7 +39,7 @@
     $(function() {
 	  var deviceType = "all";
 	  deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": "all";
-  	  deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": "all";
+  	  deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": deviceType;
       BrowserStats.load(deviceType, function(browsers) {
         var features = browsers.features;
         _.each(features, function(itm, idx) { itm.id = idx });
