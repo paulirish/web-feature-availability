@@ -5,6 +5,15 @@ html {
   box-sizing: inherit;
 }
 
+
+
+html, body {
+  font-family: 'Roboto', 'Helvetica', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+
 html {
     background-image: url('/images/lightpaperfibers.png');
     background-repeat: repeat;
@@ -39,6 +48,7 @@ header h1 {
 
 ul { 
     margin: 0;
+    padding: 0;
 }
 
 #usedFeatures ul li, ul#free li, #features li {
@@ -114,7 +124,7 @@ td.versions {
     word-break: break-all;
 }
 
-h2, h3 { clear: both; }
+h3 { margin: 30px 0 0;  }
 
 input[type=search] {
     font-size: 3em;
@@ -133,7 +143,7 @@ input[type=search] {
     /*  Mobile */
     html  {
     background-color: white;
-    margin: 0 5px 0 5px;
+    margin: 0 9px;
     }  
 
     #addfeatures { display: none; }
@@ -153,8 +163,6 @@ input[type=search] {
     }
     
     ul li label  {
-    padding: 10px;
-    word-break: break-all;
     }
 
     #mobileDesktopSplit { float: none; }
