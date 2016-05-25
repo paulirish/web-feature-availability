@@ -51,6 +51,11 @@ ul {
     padding: 0;
 }
 
+ul a, ul a:link, ul a:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
 #usedFeatures ul li, ul#free li, #features li {
     list-style: none; 
     display: block;
@@ -173,6 +178,13 @@ input[type=search] {
     #mobileDesktopSplitChart { float: none; margin: auto; text-align: center; }
     #totalShareChart { float: none; margin: auto; text-align: center; }
 }
+
+
+@media all and (max-width:345px) { 
+    html  {
+    margin: 0 2px;
+    }
+}  
 
 #charts.all .all {
     display: block;

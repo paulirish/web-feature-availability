@@ -29,14 +29,6 @@ var buildAdditionalFeatures = function(item) {
         actual: item.actual, 
         hue: hue, 
         pct: pct };
-
-    var liElem = document.querySelector("li[data-feature='" + item.id  + "']");
-    var span = liElem.querySelector('.featpct');
-    var label = liElem.querySelector('label')
-    label.style["border-color"] = "hsla(" + hue + ", 100%, 42%, 1)";
-    span.style['background-color'] = "hsla(" + hue + ", 100%, 42%, 1)";
-    span.style['width'] = pct;
-    span.textContent = item.difference.toFixed(0) + "%";
 }
 
 $(function() {
@@ -92,11 +84,14 @@ $(function() {
             var pct = feat.share.pct;
             var title = feat.title
                 .replace('CSS3 ','')
+                .replace('CSS ','')
                 .replace('(rounded corners)','')
 
             return "" + 
             "<li data-feature='" + feat.id + "'>" +
-            "<label style='border-color: " + color  + "' title='" + feat.description + "'>" + title + "</label>" + 
+            "<label style='border-color: " + color  + "' title='" + escape(feat.description) + "'>" +
+                "<a href=http://caniuse.com/#" + feat.id +  ">" + title + "</a>" +
+            "</label>" + 
             "<span class=pctholder>" + 
                 "<span class=featpct style='background-color:" + color + "; width: " + pct + "'>" + pct + "</span>" + 
             "</span>";
@@ -109,6 +104,10 @@ $(function() {
     
     }); 
 });
+
+function escape(str) {
+    return str.replace(/'/g, "")
+}
 
 var getFeatureArrayFromString = function(str) {
     var feats = str.split(",");

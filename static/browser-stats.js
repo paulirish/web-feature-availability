@@ -89,7 +89,7 @@ var BrowserStats = (function() {
           for(var b in feature.stats) {
             for(var v in feature.stats[b]) { 
               var present = feature.stats[b][v];
-              if(states.indexOf(present) > -1) {
+              if(states.includes(present)) {
                 output[f].push(b + "+" + v);
               }
             }
