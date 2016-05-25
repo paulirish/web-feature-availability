@@ -168,6 +168,7 @@ var BrowserStats = (function() {
 	  }
       browsers.addFeature(i, feature);
     }
+    browsers.featureCats = _.groupBy(browsers.features, t => t.categories[0]);
 
     callback(browsers);
   };
