@@ -82,16 +82,21 @@ $(function() {
         var feats = browsers.featureCats[cat];
         var titleHTML = '</ul><h3>' + cat + '</h3><ul>';
 
-        var categoryHTML = feats.map(function(feat){
-            var share = shareResults[feat.id][0];
-            var pct = share.pct;
+        // smush those results onto the objects
+        feats.forEach(feat => { feat.share = shareResults[feat.id][0]; });
+
+        var categoryHTML = feats
+        .sort((a, b) => b.share.difference - a.share.difference)
+        .map(function(feat){
+            var color = "hsla(" + feat.share.hue + ", 100%, 42%, 1)";
+            var pct = feat.share.pct;
             var title = feat.title
                 .replace('CSS3 ','')
-//                 .replace('CSS ','')
-            var color = "hsla(" + share.hue + ", 100%, 42%, 1)";
+                .replace('(rounded corners)','')
+
             return "" + 
             "<li data-feature='" + feat.id + "'>" +
-            "<label style='border-color: " + color  + "' for='" + feat.id + "chk'>" + title + "</label>" + 
+            "<label style='border-color: " + color  + "' title='" + feat.description + "'>" + title + "</label>" + 
             "<span class=pctholder>" + 
                 "<span class=featpct style='background-color:" + color + "; width: " + pct + "'>" + pct + "</span>" + 
             "</span>";
