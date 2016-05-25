@@ -39,10 +39,12 @@ $(function() {
     var features = browsers.features;
     _.each(features, function(itm, idx) { itm.id = idx });
     var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
-    for(var i = 0;feature=feats[i]; i++) {
-        var feat = features[feats[i]];
-        $("#features").append("<li data-feature='" + feat.id + "'><label for='" + feat.id + "chk'>" + feat.title + "</label><span class=pctholder><span class=featpct></span></span>");
-    }
+    
+    $("#features")[0].innerHTML = feats.map(function(feat){
+        var feat = features[feat];
+        return "<li data-feature='" + feat.id + "'><label for='" + feat.id + "chk'>" + feat.title + "</label><span class=pctholder><span class=featpct></span></span>";
+    }).join("");
+    
     
     var updateShare = function(requiredFeatures) {
         if(!!requiredFeatures === false)  return;
