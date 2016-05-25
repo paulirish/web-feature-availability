@@ -60,11 +60,12 @@ var BrowserStats = (function() {
 
 
 
-    this.getBrowser = function(key) {
+    this._getBrowser = function(key) {
       var ua = key.split("+");
       var agent = _agents[ua[0]];
       return { "key": key, "version": ua[1], "type": agent.type, "name": agent.browser , "browserShare": agent.getVersionShare(ua[1]) };
     };
+    this.getBrowser = _.memoize(this._getBrowser);
 
     this.addFeature = function(feature, versions) {
       _features[feature] = versions;
@@ -96,15 +97,16 @@ var BrowserStats = (function() {
         }
       }
 
-      var browser_vers = _.intersection.apply(this,output);
+      var browser_vers = output[0] || []; // _.intersection.apply(this,output);
+
       var self = this;
-      var aggregates = _.groupBy(browser_vers, function(i) { 
-        return self.getBrowser(i).name;
-      });
+//       var aggregates = _.groupBy(browser_vers, function(i) { 
+//         return self.getBrowser(i).name;
+//       });
 
       return browser_vers.map(function(i) {
         var b = self.getBrowser(i);
-        b.thing = aggregates[b.name];
+//         b.thing = aggregates[b.name];
 //         b.versions = _.map(aggregates[b.name], function(r) {return r.split('+')[1]});
 //         b._versions = _.map(aggregates[b.name], function(r) {return parseInt(r.split('+')[1].split("-")[0])});
         return b;
@@ -121,16 +123,17 @@ var BrowserStats = (function() {
 
     var featuresByProperty = function(features, states, property) {
       var supportedBy = this.getByFeature(features, states);
-      return _.map(
-        _.groupBy(supportedBy, function(i) { return i[property] }), 
-          function(i) {
-            return { 
-              "name": i[0][property],
-//               "versions": i[0].versions,
-//               "since": _.min(i[0]._versions),
-              "share": _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 )
-            }
-          });
+      var versionsByBrowser = _.groupBy(supportedBy, function(i) { return i[property] });
+      return Object.keys(versionsByBrowser).map(function(i) {
+      	i = versionsByBrowser[i]
+      	var share = _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 );
+		return { 
+		  "name": i[0][property],
+	//               "versions": i[0].versions,
+	//               "since": _.min(i[0]._versions),
+		  "share": share
+		}
+	  });
     };
 
     this.getFeature = function(featureName) {

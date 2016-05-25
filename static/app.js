@@ -18,14 +18,12 @@ var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; },
 
 var buildAdditionalFeatures = function(item) {
     var hue = Math.round(item.difference);
-    var elem = $("li[data-feature='" + item.id  + "']");
-    var span = elem.find('.featpct');
-    elem.find('label').css({ "border-color": "hsla(" + hue + ", 100%, 42%, 1)"})
-    span.css({
-    'background-color': "hsla(" + hue + ", 100%, 42%, 1)",
-    'width': (item.difference.toFixed(0) + "%")
-    });
-    span.text(item.difference.toFixed(0) + "%");
+    var elem = document.querySelector("li[data-feature='" + item.id  + "']");
+    var span = elem.querySelector('.featpct');
+    elem.querySelector('label').style["border-color"] = "hsla(" + hue + ", 100%, 42%, 1)";
+    span.style['background-color'] = "hsla(" + hue + ", 100%, 42%, 1)";
+    span.style['width'] = (item.difference.toFixed(0) + "%")
+    span.textContent = item.difference.toFixed(0) + "%";
 }
 
 $(function() {
