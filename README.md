@@ -1,14 +1,6 @@
-BrowserStats
+web-feature-distribution
 ============
 
-Browser Share by feature
+i hacked up https://github.com/PaulKinlan/iwanttouse.com real good.
 
-
-To test or run locally
-----------------------
-
-+ Install npm if you don't already have it
-+ Install bower `npm install bower`
-+ `cd static`
-+ `bower install`
-+ Host using App-engine <- to be removed
+the numbers are mostly good but i need to talk to alexis deveria first.
