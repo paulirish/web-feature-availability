@@ -4,214 +4,17 @@
     <title>I want to use</title>
     <link rel="stylesheet" href="components/bootstrap.css/css/bootstrap.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">   
-    <style>
-    
-    html { 
-        background-image: url('/images/lightpaperfibers.png');
-        background-repeat: repeat;
-        margin: 0 20% 0 20%;
-    }
-  
-       body {
-      background-color: transparent;
-      color: black;
-    }     
+    <link rel=stylesheet href="style.css">
 
-    header {
-      padding: 20px;
-      margin-top: 50px;
-      font-weight: 400;
-    }
-
-    #addfeatures {
-      clear: both;
-      padding: 0px;
-      margin-top: 30px;
-    }
-
-    header h1 {
-      font-weight: 400;
-      font-size: 4em;
-    }
-
-    .hero-unit {
-      padding: 30px;
-    }
-
-    ul { 
-      margin: 0;
-    }
-
-    #usedFeatures ul li, ul#free li, #features li {
-      list-style: none; 
-      float: left;
-      color: white;
-      text-shadow: 0 1px 1px rgba(0,0,0,0.4);
-    }
-
-    #usedFeatures ul li label, ul#free li label, ul#features li label {
-      padding: 5px;
-      margin: 5px;
-      cursor: pointer;
-      -webkit-transition: all 0.2s ease-in-out;
-      transition: all 0.2s ease-in-out;
-    }
-
-    #usedFeatures {
-      display: inline;
-      vertical-align: top;
-    }
-
-    #usedFeatures ul{
-      display: inline-block;
-    }
- 
-    #usedFeatures ul li label {
-      background-color: hsl(200, 100%, 42%); 
-      outline: none;
-      color: white !important;
-    }
-
-    #usedFeatures ul li input[type=checkbox], ul#free li input[type=checkbox], ul#features input[type=checkbox] {
-      display: none;
-    }
-
-    input[type=checkbox]:checked + label {
-      background-color: hsl(200, 100%, 42%) !important; 
-      box-shadow: inset 0px 0px 3px black;
-    }
-
-    thead {
-      text-transform: capitalize;
-    }
-
-    td {
-      padding: 5px;
-    }
-
-    td.versions {
-      word-break: break-all;
-    }
-   
-    h2, h3 { clear: both; }
-  
-    input[type=search] {
-      font-size: 3em;
-      width: 100%;
-      height: 1.2em;
-      line-height: 1.2em;
-      box-sizing: border-box;
-    }
-    
-    #share { color: hsla(90, 100%, 42%, 1); }
-
-    #mobileDesktopSplit { float: left; }
-    #totalShare { float: left; }
-
-    @media all and (max-width:650px) { 
-      /*  Mobile */
-      html  {
-        background-color: white;
-        margin: 0 5px 0 5px;
-      }  
-
-      #addfeatures { display: none; }
-
-      input[type=search] {
-        font-size: 4em;
-        ling-height: 1.0em;
-        display: none; /* until I sort out data lists */
-      }
-     
-      ul { 
-        -webkit-column-count: 2;
-        -moz-column-count: 2;
-        column-count: 2;
-      }
-
-      #usedFeatures ul {
-        display: block;
-        -webkit-column-count: 0;
-        -moz-column-count: 0;
-        column-count: 0;
-      }
-
-      ul li {
-        width: 100%;
-      }
-     
-      ul li label  {
-        padding: 10px;
-        font-size: 18px;
-        word-break: break-all;
-      }
-
-      #mobileDesktopSplit { float: none; }
-      #totalShare { float: none; }
-
-      table { margin: auto; }
-      svg { margin: auto; }
-      #mobileDesktopSplitChart { float: none; margin: auto; text-align: center; }
-      #totalShareChart { float: none; margin: auto; text-align: center; }
-    }
-
-    #charts.all .all {
-       display: block;
-    }
-
-    #charts.desktop .all {
-      display: none;
-    }
-
-    #charts.mobile .all {
-      display: none;
-    }
-  
-  </style>
 
   </head>
   <body>
 
-   <div id="result" class="all">
-      <section class="hero-unit">
-        <h2 id="usedFeatures">If you create a page using <ul></ul></h2>
-        <h1><span id="share">100</span>% of <span id="usertype">all</span> users can use it</h1>
-
-        <div id="addfeatures">
-          <input id="search" type="search" list="featureList" placeholder="Add a feature">
-          <datalist id="featureList"> </datalist>
-        </div>
-        <br/>
-	<p stlye="clear:both;">Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
-      </section>
-
-      <section>
-        <div id="charts">
-          <h2 class="all">Device type split</h2>
-          <p class="all">The ratio of the web that can use your chosen features split by Desktop and Mobile</p>
-          <div id="mobileDesktopSplit" class="all">
-            <p>Choose some features.</p>
-          </div>
-          <div id="mobileDesktopSplitChart" class="all">
-          </div>
-          <h2>Browser share</h2>
-          <p>The ratio of the entire web that can use your selected features aggregated by browser</p>
-          <div id="totalShare">
-            <p>Choose some features.</p>
-          </div>
-          <div id="totalShareChart">
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h3>Free features</h3>
-        <ul id="free"></ul>
-      </section>
-   </div>
    <h2>Browser Features</h2>
-   <p>Select a range of Browser features that you would like to use in your app</p>
    <ul id="features"></ul>
+   
+   
+   <p style="clear:both;">Powered by data from <a href="http://caniuse.com/">caniuse.com</a></p>
   </body>
   <script src="browser-stats.js"></script>
   <script src="components/d3/d3.v2.min.js"></script>
@@ -237,12 +40,15 @@
     };
 
     var buildAdditionalFeatures = function(item) {
-      // Features that are free.
-      if(Math.round(100 - item.difference) === 0) {
-        $("#free").append("<li data-share='" + item.actual + "'><input data-difference='" + item.difference + "' data-feature='" + item.id +  "' type='checkbox' id='" + item.id + "freechk'/><label for='" + item.id + "freechk'>" + item.title + "</label>");
-      }
-      $("input[data-feature='" + item.id  + "'] + label").css({ "background-color": "hsla(" + Math.round(item.difference) +", 100%, 42%, 1)"})
-      $("input[data-feature='" + item.id  + "'] + label .featpct").text("(" + item.difference.toFixed(0) + "%)")
+      var hue = Math.round(item.difference);
+      var elem = $("li[data-feature='" + item.id  + "']");
+      var span = elem.find('.featpct');
+      elem.find('label').css({ "border-color": "hsla(" + hue + ", 100%, 42%, 1)"})
+      span.css({
+        'background-color': "hsla(" + hue + ", 100%, 42%, 1)",
+        'width': (item.difference.toFixed(0) + "%")
+      });
+      span.text(item.difference.toFixed(0) + "%");
     }
 
     $(function() {
@@ -258,7 +64,7 @@
         var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
         for(var i = 0;feature=feats[i]; i++) {
           var feat = features[feats[i]];
-          $("#features").append("<li><input data-feature='" + feat.id + "' type='checkbox' id='" + feat.id + "chk'/><label for='" + feat.id + "chk'>" + feat.title + " <span class=featpct></span></label>");
+          $("#features").append("<li data-feature='" + feat.id + "'><label for='" + feat.id + "chk'>" + feat.title + "</label><span class=pctholder><span class=featpct></span></span>");
         }
       
         var updateShare = function(requiredFeatures) {
@@ -272,12 +78,12 @@
 
           bindFeatureDataList(features, requiredFeatures, buildAdditionalFeatures, sum)
           // Version numbers aren't that interesting here.
-          drawTable("#totalShare",["name", "since", "share"], supportedBy);
-          drawPie("#totalShareChart",["name", "since", "share"], supportedBy);
+        //   drawTable("#totalShare",["name", "since", "share"], supportedBy);
+        //   drawPie("#totalShareChart",["name", "since", "share"], supportedBy);
           
-          var mobileDesktopSplitData = BrowserStats.browsers.typesByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
-          drawTable("#mobileDesktopSplit",["name", "share"], mobileDesktopSplitData); 
-          drawPie("#mobileDesktopSplitChart",["name", "share"], mobileDesktopSplitData); 
+        //   var mobileDesktopSplitData = BrowserStats.browsers.typesByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
+        //   drawTable("#mobileDesktopSplit",["name", "share"], mobileDesktopSplitData); 
+        //   drawPie("#mobileDesktopSplitChart",["name", "share"], mobileDesktopSplitData); 
         };
 
         var updateHeader = function(requiredFeatures) {
@@ -303,16 +109,16 @@
            window.location.hash = featureList.join(",");
         });
         
-        window.addEventListener("hashchange", function() {
-          var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
-          updateShare(urlFeats);
-          updateHeader(urlFeats);
-          $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
-        });
+        // window.addEventListener("hashchange", function() {
+        //   var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
+        // //   updateShare(urlFeats);
+        // //   updateHeader(urlFeats);
+        //   $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
+        // });
 
         var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
         updateShare(urlFeats);
-        updateHeader(urlFeats);
+        // updateHeader(urlFeats);
         $(_.toArray(_.map(urlFeats, function(f) { return "input[data-feature='" + f + "']" })).join()).prop("checked", "checked"); 
         
         $("#search").on('change', function() {

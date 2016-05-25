@@ -102,10 +102,11 @@ var BrowserStats = (function() {
         return self.getBrowser(i).name;
       });
 
-      return _.map(browser_vers, function(i) {
+      return browser_vers.map(function(i) {
         var b = self.getBrowser(i);
-        b.versions = _.map(aggregates[b.name], function(r) {return r.split('+')[1]});
-        b._versions = _.map(aggregates[b.name], function(r) {return parseInt(r.split('+')[1].split("-")[0])});
+        b.thing = aggregates[b.name];
+//         b.versions = _.map(aggregates[b.name], function(r) {return r.split('+')[1]});
+//         b._versions = _.map(aggregates[b.name], function(r) {return parseInt(r.split('+')[1].split("-")[0])});
         return b;
       });
     };
@@ -125,8 +126,8 @@ var BrowserStats = (function() {
           function(i) {
             return { 
               "name": i[0][property],
-              "versions": i[0].versions,
-              "since": _.min(i[0]._versions),
+//               "versions": i[0].versions,
+//               "since": _.min(i[0]._versions),
               "share": _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 )
             }
           });
