@@ -50,6 +50,9 @@ ul {
     margin: 0;
     padding: 0;
 }
+ul#features {
+    min-height: 2000px;
+}
 
 ul a, ul a:link, ul a:visited {
     color: inherit;
