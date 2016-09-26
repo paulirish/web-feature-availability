@@ -89,6 +89,10 @@ var BrowserStats = (function() {
           for(var b in feature.stats) {
             for(var v in feature.stats[b]) { 
               var present = feature.stats[b][v];
+
+              // strip notes_by_num annotation.. https://github.com/Fyrd/caniuse/blob/master/CONTRIBUTING.md
+              present = present.replace(/ #\d+/g,'');
+
               if(states.includes(present)) {
                 output[f].push(b + "+" + v);
               }
