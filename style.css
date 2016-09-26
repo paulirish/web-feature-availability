@@ -95,6 +95,13 @@ span.featpct {
     padding-left: 3px;
 }
 
+em {
+    font-style: normal;
+}
+
+.pctholder.lessThan30 em {
+    mix-blend-mode: difference;
+}
 
 #usedFeatures {
     display: inline;

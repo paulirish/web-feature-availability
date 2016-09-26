@@ -85,15 +85,16 @@ $(function() {
             var title = feat.title
                 .replace('CSS3 ','')
                 .replace('CSS ','')
-                .replace('(rounded corners)','')
+                .replace('(rounded corners)','');
+
 
             return "" + 
             "<li data-feature='" + feat.id + "'>" +
             "<label style='border-color: " + color  + "' title='" + escape(feat.description) + "'>" +
                 "<a href=http://caniuse.com/#" + feat.id +  ">" + title + "</a>" +
             "</label>" + 
-            "<span class=pctholder>" + 
-                "<span class=featpct style='background-color:" + color + "; width: " + pct + "'>" + pct + "</span>" + 
+            "<span class='pctholder " + ((feat.share.difference < 30) ? "lessThan30" : "") +  "'>" + 
+                "<span class=featpct style='background-color:" + color + "; width: " + pct + "'><em>" + pct + "</em></span>" + 
             "</span>";
         }).join("");
 
