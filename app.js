@@ -1,3 +1,17 @@
+/* bling.js */
+window.$ = document.querySelector.bind(document);
+window.$$ = document.querySelectorAll.bind(document);
+Node.prototype.on = window.on = function (name, fn) {
+  this.addEventListener(name, fn);
+}
+NodeList.prototype.__proto__ = Array.prototype;
+NodeList.prototype.on = NodeList.prototype.addEventListener = function (name, fn) {
+  this.forEach(function (elem, i) {
+    elem.on(name, fn);
+  });
+}
+
+// app
 
 var bindFeatureDataList = function(features, required, onItem, sumCurrent) {
     var onItem = onItem || function() {};
@@ -31,12 +45,11 @@ var buildAdditionalFeatures = function(item) {
         pct: pct };
 }
 
-$(function() {
+document.on('DOMContentLoaded', function() {
     var deviceType = "all";
     deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": deviceType;
     deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": deviceType;
-        $("#charts").addClass(deviceType);
-        $("#usertype").text(deviceType);
+
 
     BrowserStats.load(deviceType, function(browsers) {
     var features = browsers.features;
@@ -47,14 +60,14 @@ $(function() {
     
     function updateShare(requiredFeatures) {
         if(!!requiredFeatures === false)  return;
-        var total = BrowserStats.browsers.browsersByFeature([], ["y", "y x", "a", "a x"]);
-        var supportedBy = BrowserStats.browsers.browsersByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
+       //  var total = BrowserStats.browsers.browsersByFeature([], ["y", "y x", "a", "a x"]);
+       //  var supportedBy = BrowserStats.browsers.browsersByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
 
-        var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
-        var totalSum = _.reduce(total, function(memo, num){ return memo + num.share; }, 0);
-        $("#share").css({"color": "hsla(" + Math.round((90 / 100) * (sum /totalSum * 100)) + ", 100%, 42%, 1)"  }).text((sum / totalSum * 100).toFixed(2));
+       //  var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
+       //  var totalSum = _.reduce(total, function(memo, num){ return memo + num.share; }, 0);
+       // // $("#share").css({"color": "hsla(" + Math.round((90 / 100) * (sum /totalSum * 100)) + ", 100%, 42%, 1)"  }).text((sum / totalSum * 100).toFixed(2));
 
-        return bindFeatureDataList(features, requiredFeatures, undefined, sum)
+        return bindFeatureDataList(features, requiredFeatures, undefined, 100)
         // Version numbers aren't that interesting here.
     //   drawTable("#totalShare",["name", "since", "share"], supportedBy);
     //   drawPie("#totalShareChart",["name", "since", "share"], supportedBy);
@@ -72,7 +85,7 @@ $(function() {
     var categories = Object.keys(browsers.featureCats).sort();
     var allHTML = categories.map(function(cat){
         var feats = browsers.featureCats[cat];
-        var titleHTML = '</ul><h3>' + cat + '</h3><ul>';
+        var titleHTML = `</ul><h3>${cat}</h3><ul>`;
 
         // smush those results onto the objects
         feats.forEach(feat => { feat.share = shareResults[feat.id][0]; });
@@ -80,27 +93,27 @@ $(function() {
         var categoryHTML = feats
         .sort((a, b) => b.share.difference - a.share.difference)
         .map(function(feat){
-            var color = "hsla(" + feat.share.hue + ", 100%, 42%, 1)";
+            var color = `hsla(${feat.share.hue}, 100%, 42%, 1)`;
             var pct = feat.share.pct;
             var title = feat.title
-                .replace('CSS3 ','')
-                .replace('CSS ','')
-                .replace('(rounded corners)','');
+                .replace(`CSS3 `,``)
+                .replace(`CSS `,``)
+                .replace(`(rounded corners)`,``);
 
 
-            return "" + 
-            "<li data-feature='" + feat.id + "'>" +
-            "<label style='border-color: " + color  + "' title='" + title + " — " + escape(feat.description) + "'>" +
-                "<a href=http://caniuse.com/#" + feat.id +  ">" + title + "</a>" +
-            "</label>" + 
-            "<span class='pctholder " + ((feat.share.difference < 30) ? "lessThan30" : "") +  "'>" + 
-                "<span class=featpct style='background-color:" + color + "; width: " + pct + "'><em>" + pct + "</em></span>" + 
-            "</span>";
+            return `
+            <li data-feature='${feat.id}'>
+            <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'> 
+                <a href=http://caniuse.com/#${feat.id}>${title}</a> 
+            </label> 
+            <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'> 
+                <span class=featpct style='background-color:${color}; width: ${pct}'><em>${pct}</em></span> 
+            </span>`;
         }).join("");
 
         return titleHTML + categoryHTML;
     })
-    $("#features")[0].innerHTML = allHTML;
+    $("#features").innerHTML = allHTML;
     
     
     }); 

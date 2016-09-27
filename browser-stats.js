@@ -59,17 +59,35 @@ var BrowserStats = (function() {
     };
 
 
-
     this._getBrowser = function(key) {
       var ua = key.split("+");
       var agent = _agents[ua[0]];
       return { "key": key, "version": ua[1], "type": agent.type, "name": agent.browser , "browserShare": agent.getVersionShare(ua[1]) };
     };
-    this.getBrowser = _.memoize(this._getBrowser);
+    this.browserCache = new Map();
+    this.getBrowser = function(key) {
+      var res = this.browserCache.get(key);
+      if (!res){
+        res = this._getBrowser(key);
+        this.browserCache.set(key, res);
+      }
+      return res;
+    }
 
     this.addFeature = function(feature, versions) {
       _features[feature] = versions;
     };
+
+    this.cleanCache = new Map();
+    this.stripRegex = / #\d+/g;
+    // strip notes_by_num annotation.. https://github.com/Fyrd/caniuse/blob/master/CONTRIBUTING.md
+    this.cleanAnnotations = function(stat){
+      var res = this.cleanCache.get(stat);
+      if (!res)
+        res = stat.replace(this.stripRegex,'');
+        this.cleanCache.set(stat, res);
+      return res;
+    }
 
     this.getByFeature = function(features, states) {
       var output = [];
@@ -89,32 +107,18 @@ var BrowserStats = (function() {
           for(var b in feature.stats) {
             for(var v in feature.stats[b]) { 
               var present = feature.stats[b][v];
+              present = this.cleanAnnotations(present);
 
-              // strip notes_by_num annotation.. https://github.com/Fyrd/caniuse/blob/master/CONTRIBUTING.md
-              present = present.replace(/ #\d+/g,'');
-
-              if(states.includes(present)) {
-                output[f].push(b + "+" + v);
+              if(states.indexOf(present) !== -1) {
+                var browserStr = b + "+" + v;
+                output[f].push(this.getBrowser(browserStr));
               }
             }
           }
         }
       }
 
-      var browser_vers = output[0] || []; // _.intersection.apply(this,output);
-
-      var self = this;
-//       var aggregates = _.groupBy(browser_vers, function(i) { 
-//         return self.getBrowser(i).name;
-//       });
-
-      return browser_vers.map(function(i) {
-        var b = self.getBrowser(i);
-//         b.thing = aggregates[b.name];
-//         b.versions = _.map(aggregates[b.name], function(r) {return r.split('+')[1]});
-//         b._versions = _.map(aggregates[b.name], function(r) {return parseInt(r.split('+')[1].split("-")[0])});
-        return b;
-      });
+      return output[0];
     };
 
     this.browsersByFeature = function(features, states) {
@@ -130,13 +134,14 @@ var BrowserStats = (function() {
       var versionsByBrowser = _.groupBy(supportedBy, function(i) { return i[property] });
       return Object.keys(versionsByBrowser).map(function(i) {
       	i = versionsByBrowser[i]
-      	var share = _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 );
-		return { 
-		  "name": i[0][property],
-	//               "versions": i[0].versions,
-	//               "since": _.min(i[0]._versions),
-		  "share": share
-		}
+        var share = i.reduce((memo, r) => memo + r.browserShare, 0 );
+      	// var share = _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 );
+    		return { 
+    		  "name": i[0][property],
+    	//               "versions": i[0].versions,
+    	//               "since": _.min(i[0]._versions),
+    		  "share": share
+    		}
 	  });
     };
 
@@ -148,7 +153,7 @@ var BrowserStats = (function() {
 
   var load = function(type, callback) {
     callback = callback || function() {};
-    $.get("data.json").success(function(data) { parse(type, data, callback); });
+    fetch("data.json").then(d => d.json()).then(function(data) { parse(type, data, callback); });
   };
  
   var browsers = new Browsers();

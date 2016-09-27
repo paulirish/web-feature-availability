@@ -7,6 +7,7 @@ html {
 
 
 
+
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
   margin: 0;
@@ -35,6 +36,13 @@ header {
     clear: both;
     padding: 0px;
     margin-top: 30px;
+}
+
+span.loading {
+    text-align: center;
+    display: block;
+    font-style: italic;
+    color: gray;
 }
 
 header h1 {
