@@ -20,14 +20,14 @@ var BrowserStats = (function() {
         return _agent.type;
       }
     });
-    
+
     Object.defineProperty(this, "versionKeys", {
       "get": function() {
         var versions = [];
         for(var v in _agent.versions) {
           if(!!_agent.versions[v]) {
             versions.push(key + "+" + _agent.versions[v]);
-          } 
+          }
 
         }
         return versions;
@@ -36,7 +36,7 @@ var BrowserStats = (function() {
 
     this.getVersionShare = function(version) {
       return _agent.usage_global[version] || 0;
-    }; 
+    };
 
     Object.defineProperty(this, "totalShare", {
       "get": function() {
@@ -97,7 +97,7 @@ var BrowserStats = (function() {
         for(var a in _agents) {
           agents = agents.concat(_agents[a].versionKeys);
         }
-        output.push(agents); 
+        output.push(agents);
       }
       else {
         for(var f = 0; f < features.length; f++) {
@@ -105,7 +105,7 @@ var BrowserStats = (function() {
           var feat = features[f];
           var feature = _features[feat];
           for(var b in feature.stats) {
-            for(var v in feature.stats[b]) { 
+            for(var v in feature.stats[b]) {
               var present = feature.stats[b][v];
               present = this.cleanAnnotations(present);
 
@@ -122,11 +122,11 @@ var BrowserStats = (function() {
     };
 
     this.browsersByFeature = function(features, states) {
-      return featuresByProperty.call(this, features, states, "name"); 
+      return featuresByProperty.call(this, features, states, "name");
     };
 
     this.typesByFeature =  function(features, states) {
-      return featuresByProperty.call(this, features, states, "type"); 
+      return featuresByProperty.call(this, features, states, "type");
     };
 
     var featuresByProperty = function(features, states, property) {
@@ -135,11 +135,8 @@ var BrowserStats = (function() {
       return Object.keys(versionsByBrowser).map(function(i) {
       	i = versionsByBrowser[i]
         var share = i.reduce(function(memo, r){ return memo + r.browserShare}, 0 );
-      	// var share = _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 );
-    		return { 
+    		return {
     		  "name": i[0][property],
-    	//               "versions": i[0].versions,
-    	//               "since": _.min(i[0]._versions),
     		  "share": share
     		}
 	  });
@@ -149,13 +146,13 @@ var BrowserStats = (function() {
       return _features[featureName];
 
     };
-  }; 
+  };
 
   var load = function(type, callback) {
     callback = callback || function() {};
     fetch("data.json").then(function(d){ return d.json()}).then(function(data) { parse(type, data, callback); });
   };
- 
+
   var browsers = new Browsers();
 
   var parse = function(type, data, callback) {
@@ -185,7 +182,7 @@ var BrowserStats = (function() {
   var intersect = function() {
     var itemCount = arguments.length;
     var items = {};
-    
+
     for(var i in arguments) {
       // invert the list.
       var arg = arguments[i];
@@ -194,8 +191,8 @@ var BrowserStats = (function() {
         items[a]++;
       }
     }
-     
-    var output = [];    
+
+    var output = [];
 
     for(var i in items) {
       if(items[i] == itemCount) output.push(i);

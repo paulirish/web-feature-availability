@@ -12,12 +12,8 @@ NodeList.prototype.on = NodeList.prototype.addEventListener = function (name, fn
 }
 
 // app
-
 var bindFeatureDataList = function(features, required, onItem, sumCurrent) {
-    var onItem = onItem || function() {};
-    var supportedByCurrent = BrowserStats.browsers.browsersByFeature(required, ["y", "y x", "a", "a x"]);
-    //var sumCurrent = _.reduce(supportedByCurrent, function(memo, num){ return memo + num.share; }, 0);
-    
+
     return Object.keys(features).map(function(key){
         var supportedBy = BrowserStats.browsers.browsersByFeature(required.concat(key), ["y", "y x", "a", "a x"]);
         var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
@@ -25,9 +21,9 @@ var bindFeatureDataList = function(features, required, onItem, sumCurrent) {
         var actual = sumCurrent - sum;
 
         return buildAdditionalFeatures({
-            "id": key, 
-            "title": BrowserStats.browsers.getFeature(key).title, 
-            "difference": difference, 
+            "id": key,
+            "title": BrowserStats.browsers.getFeature(key).title,
+            "difference": difference,
             "actual": sum
         });
     })
@@ -40,45 +36,24 @@ var buildAdditionalFeatures = function(item) {
         id: item.id,
         title: item.title,
         difference: item.difference,
-        actual: item.actual, 
-        hue: hue, 
+        actual: item.actual,
+        hue: hue,
         pct: pct };
 }
 
 document.on('DOMContentLoaded', function() {
     var deviceType = "all";
-    deviceType = window.location.host.indexOf("onmobile") == 0 ? "mobile": deviceType;
-    deviceType = window.location.host.indexOf("ondesktop") == 0 ? "desktop": deviceType;
-
 
     BrowserStats.load(deviceType, function(browsers) {
     var features = browsers.features;
     _.each(features, function(itm, idx) { itm.id = idx });
-    var feats = _.sortBy(_.keys(features), function(itm) { return itm; });
 
-
-    
     function updateShare(requiredFeatures) {
         if(!!requiredFeatures === false)  return;
-       //  var total = BrowserStats.browsers.browsersByFeature([], ["y", "y x", "a", "a x"]);
-       //  var supportedBy = BrowserStats.browsers.browsersByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
-
-       //  var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
-       //  var totalSum = _.reduce(total, function(memo, num){ return memo + num.share; }, 0);
-       // // $("#share").css({"color": "hsla(" + Math.round((90 / 100) * (sum /totalSum * 100)) + ", 100%, 42%, 1)"  }).text((sum / totalSum * 100).toFixed(2));
-
         return bindFeatureDataList(features, requiredFeatures, undefined, 100)
-        // Version numbers aren't that interesting here.
-    //   drawTable("#totalShare",["name", "since", "share"], supportedBy);
-    //   drawPie("#totalShareChart",["name", "since", "share"], supportedBy);
-        
-    //   var mobileDesktopSplitData = BrowserStats.browsers.typesByFeature(requiredFeatures, ["y", "y x", "a", "a x"]);
-    //   drawTable("#mobileDesktopSplit",["name", "share"], mobileDesktopSplitData); 
-    //   drawPie("#mobileDesktopSplitChart",["name", "share"], mobileDesktopSplitData); 
     };
 
-
-    var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
+    var urlFeats = getFeatureArrayFromString('');
     var shareResults = updateShare(urlFeats);
     shareResults = _.groupBy(shareResults, function(f){ return f.id });
 
@@ -103,20 +78,20 @@ document.on('DOMContentLoaded', function() {
 
             return `
             <li data-feature='${feat.id}'>
-            <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'> 
-                <a href=http://caniuse.com/#${feat.id}>${title}</a> 
-            </label> 
-            <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'> 
-                <span class=featpct style='background-color:${color}; width: ${pct}'><em>${pct}</em></span> 
+            <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'>
+                <a href=http://caniuse.com/#${feat.id}>${title}</a>
+            </label>
+            <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'>
+                <span class=featpct style='background-color:${color}; width: ${pct}'><em>${pct}</em></span>
             </span>`;
         }).join("");
 
         return titleHTML + categoryHTML;
     })
     $("#features").innerHTML = allHTML.join('');
-    
-    
-    }); 
+
+
+    });
 });
 
 function escape(str) {
