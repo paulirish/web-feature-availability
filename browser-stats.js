@@ -133,13 +133,13 @@ var BrowserStats = (function() {
       var supportedBy = this.getByFeature(features, states);
       var versionsByBrowser = _.groupBy(supportedBy, function(i) { return i[property] });
       return Object.keys(versionsByBrowser).map(function(i) {
-      	i = versionsByBrowser[i]
+        i = versionsByBrowser[i]
         var share = i.reduce(function(memo, r){ return memo + r.browserShare}, 0 );
-    		return {
-    		  "name": i[0][property],
-    		  "share": share
-    		}
-	  });
+        return {
+          "name": i[0][property],
+          "share": share
+        }
+    });
     };
 
     this.getFeature = function(featureName) {
@@ -156,22 +156,22 @@ var BrowserStats = (function() {
   var browsers = new Browsers();
 
   var parse = function(type, data, callback) {
-	var validAgents = {};
+  var validAgents = {};
     for(var a in data.agents) {
-	  if(type == "all" || type == data.agents[a].type) {
+    if(type == "all" || type == data.agents[a].type) {
         browsers.addBrowser(a, data.agents[a]);
         validAgents[a] = true;
       }
     }
 
     for(var i in data.data) {
-	  // Remove agents that are not part of the viewed set.
-	  var feature = data.data[i]
-	  for(var a in feature.stats) {
-		if(!!validAgents[a] == false) {
-		  feature.stats[a] = undefined
-		}
-	  }
+    // Remove agents that are not part of the viewed set.
+    var feature = data.data[i]
+    for(var a in feature.stats) {
+    if(!!validAgents[a] == false) {
+      feature.stats[a] = undefined
+    }
+    }
       browsers.addFeature(i, feature);
     }
     browsers.featureCats = _.groupBy(browsers.features, function(t) { return t.categories[0]});
@@ -202,11 +202,11 @@ var BrowserStats = (function() {
   };
 
   var returnObject = {
-	load: load,
-	browsers: function(type) {
-	  if(!!type == false) return browsers;
-	  else return
-	}
+  load: load,
+  browsers: function(type) {
+    if(!!type == false) return browsers;
+    else return
+  }
   };
 
   Object.defineProperty(returnObject, "browsers", {
