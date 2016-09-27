@@ -80,7 +80,7 @@ document.on('DOMContentLoaded', function() {
 
     var urlFeats = getFeatureArrayFromString(window.location.hash.substring(1));
     var shareResults = updateShare(urlFeats);
-    shareResults = _.groupBy(shareResults, f => f.id );
+    shareResults = _.groupBy(shareResults, function(f){ return f.id });
 
     var categories = Object.keys(browsers.featureCats).sort();
     var allHTML = categories.map(function(cat){
@@ -88,10 +88,10 @@ document.on('DOMContentLoaded', function() {
         var titleHTML = `</ul><h3>${cat}</h3><ul>`;
 
         // smush those results onto the objects
-        feats.forEach(feat => { feat.share = shareResults[feat.id][0]; });
+        feats.forEach(function(feat){ feat.share = shareResults[feat.id][0]; });
 
         var categoryHTML = feats
-        .sort((a, b) => b.share.difference - a.share.difference)
+        .sort(function(a, b) { return b.share.difference - a.share.difference})
         .map(function(feat){
             var color = `hsla(${feat.share.hue}, 100%, 42%, 1)`;
             var pct = feat.share.pct;

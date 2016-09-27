@@ -134,7 +134,7 @@ var BrowserStats = (function() {
       var versionsByBrowser = _.groupBy(supportedBy, function(i) { return i[property] });
       return Object.keys(versionsByBrowser).map(function(i) {
       	i = versionsByBrowser[i]
-        var share = i.reduce((memo, r) => memo + r.browserShare, 0 );
+        var share = i.reduce(function(memo, r){ return memo + r.browserShare}, 0 );
       	// var share = _.reduce(i, function(memo, r) { return memo + r.browserShare  }, 0 );
     		return { 
     		  "name": i[0][property],
@@ -153,7 +153,7 @@ var BrowserStats = (function() {
 
   var load = function(type, callback) {
     callback = callback || function() {};
-    fetch("data.json").then(d => d.json()).then(function(data) { parse(type, data, callback); });
+    fetch("data.json").then(function(d){ return d.json()}).then(function(data) { parse(type, data, callback); });
   };
  
   var browsers = new Browsers();
@@ -177,7 +177,7 @@ var BrowserStats = (function() {
 	  }
       browsers.addFeature(i, feature);
     }
-    browsers.featureCats = _.groupBy(browsers.features, t => t.categories[0]);
+    browsers.featureCats = _.groupBy(browsers.features, function(t) { return t.categories[0]});
 
     callback(browsers);
   };
