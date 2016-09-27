@@ -113,7 +113,7 @@ document.on('DOMContentLoaded', function() {
 
         return titleHTML + categoryHTML;
     })
-    $("#features").innerHTML = allHTML;
+    $("#features").innerHTML = allHTML.join('');
     
     
     }); 
