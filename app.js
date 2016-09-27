@@ -90,7 +90,7 @@ $(function() {
 
             return "" + 
             "<li data-feature='" + feat.id + "'>" +
-            "<label style='border-color: " + color  + "' title='" + escape(feat.description) + "'>" +
+            "<label style='border-color: " + color  + "' title='" + title + " — " + escape(feat.description) + "'>" +
                 "<a href=http://caniuse.com/#" + feat.id +  ">" + title + "</a>" +
             "</label>" + 
             "<span class='pctholder " + ((feat.share.difference < 30) ? "lessThan30" : "") +  "'>" + 

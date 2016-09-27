@@ -89,18 +89,20 @@ span.pctholder {
 }
 
 span.featpct {
-    /* position: absolute; */
     display: inline-block;
     color: white;
-    padding-left: 3px;
+    padding-left: 1px;
 }
 
 em {
     font-style: normal;
+    padding-left: 11px;
 }
 
 .pctholder.lessThan30 em {
     mix-blend-mode: difference;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.47);
+    color: hsla(192, 100%, 50%, 1);
 }
 
 #usedFeatures {
