@@ -3,8 +3,6 @@
   "version": "0.0.0.1",
   "dependencies": {
     "jquery": "*",
-    "d3": "*",
-    "bootstrap.css": "*",
     "underscore": "*",
     "jets": "^0.11.0"
   }
