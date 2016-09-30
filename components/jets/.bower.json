@@ -1,0 +1,35 @@
+{
+  "name": "jets",
+  "main": "jets.min.js",
+  "homepage": "https://github.com/NeXTs/Jets.js",
+  "authors": [
+    "Denis Lukov <denismassters@gmail.com>"
+  ],
+  "description": "Native CSS search engine",
+  "moduleType": [
+    "amd",
+    "globals",
+    "commonjs"
+  ],
+  "keywords": [
+    "css",
+    "search",
+    "list",
+    "jets"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "/node_modules",
+    "npm-debug.log"
+  ],
+  "version": "0.11.0",
+  "_release": "0.11.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.11.0",
+    "commit": "f58478dae65427cc34d1cdedd2e3c28986a3687c"
+  },
+  "_source": "https://github.com/NeXTs/Jets.js.git",
+  "_target": "^0.11.0",
+  "_originalSource": "jets"
+}

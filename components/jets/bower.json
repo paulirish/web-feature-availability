@@ -1,0 +1,22 @@
+{
+  "name": "jets",
+  "main": "jets.min.js",
+  "homepage": "https://github.com/NeXTs/Jets.js",
+  "authors": [
+    "Denis Lukov <denismassters@gmail.com>"
+  ],
+  "description": "Native CSS search engine",
+  "moduleType": [
+    "amd",
+    "globals",
+    "commonjs"
+  ],
+  "keywords": [
+    "css",
+    "search",
+    "list",
+    "jets"
+  ],
+  "license": "MIT",
+  "ignore": ["/node_modules", "npm-debug.log"]
+}
