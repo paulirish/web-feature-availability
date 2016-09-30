@@ -5,6 +5,7 @@
     "jquery": "*",
     "d3": "*",
     "bootstrap.css": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "jets": "^0.11.0"
   }
 }

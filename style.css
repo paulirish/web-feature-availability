@@ -176,7 +176,7 @@ input[type=search] {
     input[type=search] {
     font-size: 4em;
     ling-height: 1.0em;
-    display: none; /* until I sort out data lists */
+    /*display: none; !* until I sort out data lists *!*/
     }
     
     #usedFeatures ul {
@@ -216,3 +216,12 @@ input[type=search] {
 
 #charts.mobile .all {
     display: none;
+}
+
+.is-searching .search {
+    margin-bottom: 30px;
+}
+
+.is-searching .features h3 {
+    display: none;
+}

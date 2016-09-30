@@ -91,6 +91,8 @@ document.on('DOMContentLoaded', function() {
     $("#features").innerHTML = allHTML.join('');
 
 
+    setupSearch();
+
     });
 });
 
@@ -103,3 +105,16 @@ var getFeatureArrayFromString = function(str) {
     if(feats.length == 1 && feats[0] === "")  return [];
     return feats
 };
+
+function setupSearch() {
+    var searchInput = document.getElementById('search');
+
+    searchInput.addEventListener('input', function() {
+        document.body.classList.toggle('is-searching', searchInput.value);
+    });
+
+    new Jets({
+        searchTag: '#search',
+        contentTag: '#features > ul'
+    });
+}
