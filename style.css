@@ -174,9 +174,7 @@ input[type=search] {
     #addfeatures { display: none; }
 
     input[type=search] {
-    font-size: 4em;
-    ling-height: 1.0em;
-    /*display: none; !* until I sort out data lists *!*/
+        font-size: 1.2em;
     }
     
     #usedFeatures ul {
