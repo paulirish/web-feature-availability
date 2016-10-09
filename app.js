@@ -68,7 +68,8 @@ document.on('DOMContentLoaded', function() {
         var categoryHTML = feats
         .sort(function(a, b) { return b.share.difference - a.share.difference})
         .map(function(feat){
-            var color = `hsla(${feat.share.hue}, 100%, 42%, 1)`;
+            var adjustedHue = adjustHue(feat.share.hue);
+            var color = `hsla(${adjustedHue}, 100%, 42%, 1)`;
             var pct = feat.share.pct;
             var title = feat.title
                 .replace(`CSS3 `,``)
@@ -117,4 +118,8 @@ function setupSearch() {
         searchTag: '#search',
         contentTag: '#features > ul'
     });
+}
+
+function adjustHue(hue) {
+  return Math.pow(hue,3)/10000;
 }
