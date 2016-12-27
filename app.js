@@ -80,7 +80,7 @@ document.on('DOMContentLoaded', function() {
             return `
             <li data-feature='${feat.id}'>
             <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'>
-                <a href=http://caniuse.com/#${feat.id}>${title}</a>
+                <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
             </label>
             <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'>
                 <span class=featpct style='background-color:${color}; width: ${pct}'><em>${pct}</em></span>
