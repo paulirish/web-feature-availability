@@ -96,6 +96,8 @@ document.on('DOMContentLoaded', function() {
 
     setupSearch();
 
+    updateDates(browsers);
+
     });
 });
 
@@ -108,6 +110,11 @@ var getFeatureArrayFromString = function(str) {
     if(feats.length == 1 && feats[0] === "")  return [];
     return feats
 };
+
+function updateDates(browsers) {
+    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    $('#caniuse-date').textContent = new Date(browsers.updated * 1000).toLocaleDateString(dateOptions);
+}
 
 function setupSearch() {
     var searchInput = document.getElementById('search');

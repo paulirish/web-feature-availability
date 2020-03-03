@@ -176,6 +176,8 @@ var BrowserStats = (function() {
     }
     browsers.featureCats = _.groupBy(browsers.features, function(t) { return t.categories[0]});
 
+    browsers.updated = data.updated;
+
     callback(browsers);
   };
 
