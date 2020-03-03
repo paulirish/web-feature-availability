@@ -66,6 +66,8 @@ document.on('DOMContentLoaded', function() {
         feats.forEach(function(feat){ feat.share = shareResults[feat.id][0]; });
 
         var categoryHTML = feats
+          // only include features with a chrome_id.. recent stuff?
+        .filter(feat => !!feat.chrome_id)
         .sort(function(a, b) { return b.share.difference - a.share.difference})
         .map(function(feat){
             var adjustedHue = adjustHue(feat.share.hue);
