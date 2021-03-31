@@ -1,3 +1,4 @@
 [submodule "caniuse"]
-	path = caniuse
-	url = https://github.com/Fyrd/caniuse.git
+  path = caniuse
+  url = https://github.com/Fyrd/caniuse.git
+  branch = main
