@@ -68,22 +68,29 @@ document.on('DOMContentLoaded', function() {
     delete browsers.featureCats.PNG;
 
     let totalFeatures = 0;
+    const hasParamAll = new URL(location.href).searchParams.has('all');
+    const hasParam99 = new URL(location.href).searchParams.has('99');
 
     var categories = Object.keys(browsers.featureCats).sort();
     var allHTML = categories.map(function(cat){
         const feats = browsers.featureCats[cat];
-        const titleHTML = `</ul><h3>${cat}</h3><ul>`;
+
+        const renamedCat = ({'JS API': 'Browser APIs'})[cat] || cat;
+        const titleHTML = `</ul><h3>${renamedCat}</h3><ul>`;
 
         // smush those results onto the objects
         feats.forEach(function(feat){ feat.share = shareResults[feat.id][0]; });
 
         const categoryHTML = feats
-        // only include features with a chrome_id.. recent stuff?  Cool, but there are decent things without a chrome_id.
-        // .filter(feat => !feat.chrome_id)
-        // INSTEAD.. filter out the obvious things
-        // .filter(feat => feat.share.difference < (!!new URL(location.href).searchParams.get('all') ? Infinity : 98))
-        .filter(feat => feat.share.difference < (!!new URL(location.href).searchParams.has('all') ? 9000 : 98))
         .map(feat => { feat.totalSupport = feat.usage_perc_a + feat.usage_perc_y; return feat; })
+        .filter(feat => {
+            // Previously i filtered for features with a chrome_id.. (as a proxy for recent stuff?) but it misses out on some stuff...
+            // now we filter for obviously supported stuff (but allowlist 'JS' stuff because _developit said so.)
+            if (hasParamAll) return true;
+            if (hasParam99) return feat.totalSupport >=  98 && cat !== 'JS';
+
+            return feat.totalSupport < 98 || cat === 'JS';
+        })
         .sort(function(a, b) { return b.totalSupport - a.totalSupport})
         .map(function(feat){
             // we're using a hue that's not based off our totalSupport prop.  this leads to weirdness with `:is() pseudo-class` ... but i have no idea why.
