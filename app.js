@@ -15,35 +15,20 @@ NodeList.prototype.on = NodeList.prototype.addEventListener = function (name, fn
 // but i can tell you that the code isn't elegant
 // so, i'm sorry.
 
+
+//
 // app
+//
+
 var bindFeatureDataList = function(features, required, onItem, sumCurrent) {
-
     return Object.keys(features).map(function(key){
-        var supportedBy = BrowserStats.browsers.browsersByFeature(required.concat(key), ["y", "y x", "a", "a x"]);
-        var sum = _.reduce(supportedBy, function(memo, num){ return memo + num.share; }, 0);
-        var difference = (sum / sumCurrent) * 100;
-        var actual = sumCurrent - sum;
 
-        return buildAdditionalFeatures({
+        return {
             "id": key,
             "title": BrowserStats.browsers.getFeature(key).title,
-            "difference": difference,
-            "actual": sum
-        });
+        };
     })
 };
-
-var buildAdditionalFeatures = function(item) {
-    var hue = Math.round(item.difference);
-    var pct = item.difference.toFixed(0) + "%";
-    return {
-        id: item.id,
-        title: item.title,
-        difference: item.difference,
-        actual: item.actual,
-        hue: hue,
-        pct: pct };
-}
 
 document.on('DOMContentLoaded', function() {
     var deviceType = "all";
@@ -93,15 +78,13 @@ document.on('DOMContentLoaded', function() {
         })
         .sort(function(a, b) { return b.totalSupport - a.totalSupport})
         .map(function(feat){
-            // we're using a hue that's not based off our totalSupport prop.  this leads to weirdness with `:is() pseudo-class` ... but i have no idea why.
-            var adjustedHue = adjustHue(feat.share.hue);
+            var adjustedHue = adjustHue(feat.totalSupport);
             var color = `hsla(${adjustedHue}, 100%, 42%, 1)`;
 
             var partialColor = `hsla(${adjustedHue}, 90%, 39.6%, 1)`;
             const fullSupportPct = feat.usage_perc_y;
             const partialSupportPct = feat.usage_perc_a;
 
-            var roundedPct = feat.share.pct;
             var pct = `${escape(feat.totalSupport.toLocaleString(undefined, {maximumFractionDigits: 1}))}%`;
             var title = feat.title
                 .replace(`CSS3 `,``)
@@ -116,7 +99,7 @@ document.on('DOMContentLoaded', function() {
                 <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'>
                     <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
                 </label>
-                <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'>
+                <span class='pctholder ${(feat.totalSupport < 30) ? "lessThan30" : ""}'>
                     <em>${pct}</em>
                     <span class=featpct
                         style='background-color:${color}; width: ${fullSupportPct}%'>
@@ -180,5 +163,6 @@ function setupSearch() {
 }
 
 function adjustHue(hue) {
+    // what math this is i have NO idea
   return Math.pow(hue,3)/10000;
 }
