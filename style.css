@@ -43,7 +43,7 @@ span.loading {
     text-align: center;
     display: block;
     font-style: italic;
-    color: gray;
+    color: #767676;
 }
 
 header h1 {
@@ -85,7 +85,7 @@ ul a, ul a:link, ul a:visited {
     text-align: right;
     /* transition: all 0.2s ease-in-out; */
     display: inline-block;
-    color: gray;
+    color: #767676;
     /* overflow: hidden; */
     /* text-overflow: ellipsis; */
     /* height: 20px; */
