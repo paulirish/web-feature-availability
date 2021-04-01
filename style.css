@@ -83,7 +83,7 @@ ul a, ul a:link, ul a:visited {
     margin: 0 14px 0 0;
     width: var(--first-col);
     text-align: right;
-    transition: all 0.2s ease-in-out;
+    /* transition: all 0.2s ease-in-out; */
     display: inline-block;
     color: gray;
     /* overflow: hidden; */
