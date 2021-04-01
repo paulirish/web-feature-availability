@@ -11,6 +11,10 @@ NodeList.prototype.on = NodeList.prototype.addEventListener = function (name, fn
   });
 }
 
+// honestly i couldn't tell you how much of this code is from me over the past 5 years and how much is kinlan's fault (https://github.com/PaulKinlan/iwanttouse.com)
+// but i can tell you that the code isn't elegant
+// so, i'm sorry.
+
 // app
 var bindFeatureDataList = function(features, required, onItem, sumCurrent) {
 
