@@ -19,12 +19,13 @@ html {
     background-image: url('./images/lightpaperfibers.png');
     background-repeat: repeat;
     margin: 0 10% 0 10%;
+    max-width: 1240px;
 }
 
     body {
     background-color: transparent;
     color: black;
-}     
+}
 
 header {
     padding: 20px;
@@ -54,7 +55,7 @@ header h1 {
     padding: 30px;
 }
 
-ul { 
+ul {
     margin: 0;
     padding: 0;
 }
@@ -68,31 +69,42 @@ ul a, ul a:link, ul a:visited {
 }
 
 #usedFeatures ul li, ul#free li, #features li {
-    list-style: none; 
+    list-style: none;
     display: block;
     position: relative;
-    height: 30px;
+    margin-bottom: 10px;
+}
+:root {
+    --first-col: 240px;
 }
 
 #usedFeatures ul li label, ul#free li label, ul#features li label {
     /* padding: 5px; */
     margin: 0 14px 0 0;
-    width: 240px;
+    width: var(--first-col);
     text-align: right;
     transition: all 0.2s ease-in-out;
     display: inline-block;
     color: gray;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
     /* height: 20px; */
-    white-space: nowrap;
+    /* white-space: nowrap; */
     vertical-align: middle;
+
+    word-break: break-word;
+    hyphens: auto;
+}
+
+#usedFeatures ul li label a, ul#free li label, ul#features li label a {
     border-bottom-width: 1px;
     border-bottom-style: dotted;
+    display: inline-block;
+    border-color: inherit;
 }
 
 span.pctholder {
-    width: calc(100% - 260px);
+    width: calc(100% - var(--first-col) - 20px);
     display: inline-block;
 }
 
@@ -102,15 +114,15 @@ span.featpct {
     padding-left: 1px;
 }
 
-em {
+span em {
     font-style: normal;
     padding-left: 11px;
 }
 
 .pctholder.lessThan30 em {
     mix-blend-mode: difference;
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.47);
-    color: hsla(192, 100%, 50%, 1);
+    text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.47);
+    color: hsl(0deg 0% 100%);
 }
 
 #usedFeatures {
@@ -123,7 +135,7 @@ em {
 }
 
 #usedFeatures ul li label {
-    background-color: hsl(200, 100%, 42%); 
+    background-color: hsl(200, 100%, 42%);
     outline: none;
     color: white !important;
 }
@@ -132,8 +144,12 @@ em {
     display: none;
 }
 
+ul {
+    font-size: 14px;
+}
+
 input[type=checkbox]:checked + label {
-    background-color: hsl(200, 100%, 42%) !important; 
+    background-color: hsl(200, 100%, 42%) !important;
     box-shadow: inset 0px 0px 3px black;
 }
 
@@ -152,7 +168,7 @@ td.versions {
 h3 { margin: 30px 0 0;  }
 
 input[type=search] {
-    font-size: 3em;
+    font-size: 24px;
     width: 100%;
     height: 1.2em;
     line-height: 1.2em;
@@ -164,19 +180,19 @@ input[type=search] {
 #mobileDesktopSplit { float: left; }
 #totalShare { float: left; }
 
-@media all and (max-width:650px) { 
+@media all and (max-width:650px) {
     /*  Mobile */
     html  {
     background-color: white;
     margin: 0 9px;
-    }  
+    }
 
     #addfeatures { display: none; }
 
     input[type=search] {
         font-size: 1.2em;
     }
-    
+
     #usedFeatures ul {
     display: block;
     }
@@ -184,7 +200,7 @@ input[type=search] {
     ul li {
     width: 100%;
     }
-    
+
     ul li label  {
     }
 
@@ -198,11 +214,19 @@ input[type=search] {
 }
 
 
-@media all and (max-width:345px) { 
+@media all and (max-width:345px) {
     html  {
     margin: 0 2px;
     }
-}  
+
+}
+
+@media all and (max-width:555px) {
+
+:root {
+    --first-col: 39%;
+}
+}
 
 #charts.all .all {
     display: block;

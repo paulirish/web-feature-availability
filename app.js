@@ -57,42 +57,56 @@ document.on('DOMContentLoaded', function() {
     var shareResults = updateShare(urlFeats);
     shareResults = _.groupBy(shareResults, function(f){ return f.id });
 
+    let totalFeatures = 0;
+
     var categories = Object.keys(browsers.featureCats).sort();
     var allHTML = categories.map(function(cat){
-        var feats = browsers.featureCats[cat];
-        var titleHTML = `</ul><h3>${cat}</h3><ul>`;
+        const feats = browsers.featureCats[cat];
+        const titleHTML = `</ul><h3>${cat}</h3><ul>`;
 
         // smush those results onto the objects
         feats.forEach(function(feat){ feat.share = shareResults[feat.id][0]; });
 
-        var categoryHTML = feats
-          // only include features with a chrome_id.. recent stuff?
-        .filter(feat => !!feat.chrome_id)
+        const categoryHTML = feats
+        // only include features with a chrome_id.. recent stuff?  Cool, but there are decent things without a chrome_id.
+        // .filter(feat => !feat.chrome_id)
+        // INSTEAD.. filter out the obvious things
+        // .filter(feat => feat.share.difference < (!!new URL(location.href).searchParams.get('all') ? Infinity : 98))
+        .filter(feat => feat.share.difference < (!!new URL(location.href).searchParams.has('all') ? 9000 : 98))
         .sort(function(a, b) { return b.share.difference - a.share.difference})
         .map(function(feat){
             var adjustedHue = adjustHue(feat.share.hue);
             var color = `hsla(${adjustedHue}, 100%, 42%, 1)`;
-            var pct = feat.share.pct;
+            var roundedPct = feat.share.pct;
+            var pct = `${escape(feat.share.difference.toLocaleString(undefined, {maximumFractionDigits: 1}))}%`;
             var title = feat.title
                 .replace(`CSS3 `,``)
                 .replace(`CSS `,``)
                 .replace(`(rounded corners)`,``);
 
+            totalFeatures++;
 
             return `
             <li data-feature='${feat.id}'>
-            <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'>
-                <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
-            </label>
-            <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'>
-                <span class=featpct style='background-color:${color}; width: ${pct}'><em>${pct}</em></span>
-            </span>`;
+                <label style='border-color: ${color }' title='${title} — ${escape(feat.description)}'>
+                    <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
+                </label>
+                <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'>
+                    <span class=featpct
+                        style='background-color:${color}; width: ${pct}'>
+                            <em>${pct}</em>
+                    </span>
+                </span>`;
         }).join("");
+
+        // dont make a heading for an empty section (CSS2)
+        if (!categoryHTML) return '';
 
         return titleHTML + categoryHTML;
     })
     $("#features").innerHTML = allHTML.join('');
 
+    $('#search').placeholder = `Filter across ${totalFeatures.toLocaleString()} features…`;
 
     setupSearch();
 
@@ -100,6 +114,7 @@ document.on('DOMContentLoaded', function() {
 
     });
 });
+
 
 function escape(str) {
     return str.replace(/'/g, "")
@@ -113,7 +128,7 @@ var getFeatureArrayFromString = function(str) {
 
 function updateDates(browsers) {
     const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    $('#caniuse-date').textContent = new Date(browsers.updated * 1000).toLocaleDateString(dateOptions);
+    $('#caniuse-date').textContent = new Date(browsers.updated * 1000).toLocaleDateString(undefined, dateOptions);
 }
 
 function setupSearch() {
