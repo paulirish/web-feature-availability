@@ -61,6 +61,12 @@ document.on('DOMContentLoaded', function() {
     var shareResults = updateShare(urlFeats);
     shareResults = _.groupBy(shareResults, function(f){ return f.id });
 
+    // merge a few categories together
+    browsers.featureCats.CSS = [...browsers.featureCats.CSS, ...browsers.featureCats.CSS3];
+    delete browsers.featureCats.CSS3;
+    browsers.featureCats.Other = [...browsers.featureCats.Other, ...browsers.featureCats.PNG];
+    delete browsers.featureCats.PNG;
+
     let totalFeatures = 0;
 
     var categories = Object.keys(browsers.featureCats).sort();
