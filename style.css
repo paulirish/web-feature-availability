@@ -59,7 +59,7 @@ ul {
     margin: 0;
     padding: 0;
 }
-ul#features {
+#features {
     min-height: 2000px;
 }
 
@@ -78,7 +78,7 @@ ul a, ul a:link, ul a:visited {
     --first-col: 240px;
 }
 
-#usedFeatures ul li label, ul#free li label, ul#features li label {
+#usedFeatures ul li label, ul#free li label, #features li label {
     /* padding: 5px; */
     margin: 0 14px 0 0;
     width: var(--first-col);
@@ -96,7 +96,7 @@ ul a, ul a:link, ul a:visited {
     hyphens: auto;
 }
 
-#usedFeatures ul li label a, ul#free li label, ul#features li label a {
+#usedFeatures ul li label a, ul#free li label, #features li label a {
     border-bottom-width: 1px;
     border-bottom-style: dotted;
     display: inline-block;
@@ -106,23 +106,30 @@ ul a, ul a:link, ul a:visited {
 span.pctholder {
     width: calc(100% - var(--first-col) - 20px);
     display: inline-block;
+    position:relative;
+    color: white;
 }
 
 span.featpct {
     display: inline-block;
-    color: white;
     padding-left: 1px;
+    height: 16px;
+}
+.featpct--partial {
+    padding-left: 0;
 }
 
 span em {
     font-style: normal;
     padding-left: 11px;
+    position:absolute;
 }
 
 .pctholder.lessThan30 em {
     mix-blend-mode: difference;
     text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.47);
     color: hsl(0deg 0% 100%);
+    /* https://www.w3.org/TR/css-color-5/#colorcontrast will be nice in the future :D  */
 }
 
 #usedFeatures {
@@ -140,7 +147,7 @@ span em {
     color: white !important;
 }
 
-#usedFeatures ul li input[type=checkbox], ul#free li input[type=checkbox], ul#features input[type=checkbox] {
+#usedFeatures ul li input[type=checkbox], ul#free li input[type=checkbox], #features input[type=checkbox] {
     display: none;
 }
 

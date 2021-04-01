@@ -73,18 +73,26 @@ document.on('DOMContentLoaded', function() {
         // INSTEAD.. filter out the obvious things
         // .filter(feat => feat.share.difference < (!!new URL(location.href).searchParams.get('all') ? Infinity : 98))
         .filter(feat => feat.share.difference < (!!new URL(location.href).searchParams.has('all') ? 9000 : 98))
-        .sort(function(a, b) { return b.share.difference - a.share.difference})
+        .map(feat => { feat.totalSupport = feat.usage_perc_a + feat.usage_perc_y; return feat; })
+        .sort(function(a, b) { return b.totalSupport - a.totalSupport})
         .map(function(feat){
+            // we're using a hue that's not based off our totalSupport prop.  this leads to weirdness with `:is() pseudo-class` ... but i have no idea why.
             var adjustedHue = adjustHue(feat.share.hue);
             var color = `hsla(${adjustedHue}, 100%, 42%, 1)`;
+
+            var partialColor = `hsla(${adjustedHue}, 90%, 39.6%, 1)`;
+            const fullSupportPct = feat.usage_perc_y;
+            const partialSupportPct = feat.usage_perc_a;
+
             var roundedPct = feat.share.pct;
-            var pct = `${escape(feat.share.difference.toLocaleString(undefined, {maximumFractionDigits: 1}))}%`;
+            var pct = `${escape(feat.totalSupport.toLocaleString(undefined, {maximumFractionDigits: 1}))}%`;
             var title = feat.title
                 .replace(`CSS3 `,``)
                 .replace(`CSS `,``)
                 .replace(`(rounded corners)`,``);
 
             totalFeatures++;
+            allfeats.push(feat);
 
             return `
             <li data-feature='${feat.id}'>
@@ -92,9 +100,18 @@ document.on('DOMContentLoaded', function() {
                     <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
                 </label>
                 <span class='pctholder ${(feat.share.difference < 30) ? "lessThan30" : ""}'>
+                    <em>${pct}</em>
                     <span class=featpct
-                        style='background-color:${color}; width: ${pct}'>
-                            <em>${pct}</em>
+                        style='background-color:${color}; width: ${fullSupportPct}%'>
+                    </span><span class='featpct featpct--partial'
+                        style='background: repeating-linear-gradient(
+                            -45deg,
+                            ${color},
+                            ${color} 10px,
+                            ${partialColor} 10px,
+                            ${partialColor} 20px
+                          );
+                           width: ${partialSupportPct}%'>
                     </span>
                 </span>`;
         }).join("");
@@ -115,6 +132,7 @@ document.on('DOMContentLoaded', function() {
     });
 });
 
+window.allfeats = [];
 
 function escape(str) {
     return str.replace(/'/g, "")
