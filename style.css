@@ -1,167 +1,160 @@
 html {
   box-sizing: border-box;
 }
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
-
-
-
-html, body {
+html,
+body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
   margin: 0;
   padding: 0;
 }
 
-
 html {
-    background-image: url('./images/lightpaperfibers.png');
-    background-repeat: repeat;
-    margin: 0 10% 0 10%;
-    max-width: 1040px;
+  background-image: url('./images/lightpaperfibers.png');
+  background-repeat: repeat;
+  margin: 0 10% 0 10%;
+  max-width: 1040px;
 }
 
-    body {
-    background-color: transparent;
-    color: black;
+body {
+  background-color: transparent;
+  color: black;
 }
-
-
 
 span.loading {
-    text-align: center;
-    display: block;
-    font-style: italic;
-    color: #767676;
+  text-align: center;
+  display: block;
+  font-style: italic;
+  color: #767676;
 }
-
 
 ul {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 #features {
-    min-height: 2000px;
+  min-height: 2000px;
 }
 
-ul a, ul a:link, ul a:visited {
-    color: inherit;
-    text-decoration: none;
+ul a,
+ul a:link,
+ul a:visited {
+  color: inherit;
+  text-decoration: none;
 }
 
 #features li {
-    list-style: none;
-    display: block;
-    position: relative;
-    margin-bottom: 10px;
+  list-style: none;
+  display: block;
+  position: relative;
+  margin-bottom: 10px;
 }
 :root {
-    --first-col: 240px;
+  --first-col: 240px;
 }
 
 #features li label {
-    margin: 0 14px 0 0;
-    width: var(--first-col);
-    text-align: right;
-    display: inline-block;
-    color: #767676;
-    vertical-align: middle;
+  margin: 0 14px 0 0;
+  width: var(--first-col);
+  text-align: right;
+  display: inline-block;
+  color: #767676;
+  vertical-align: middle;
 
-    word-break: break-word;
-    hyphens: auto;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 #features li label a {
-    border-bottom-width: 1px;
-    border-bottom-style: dotted;
-    display: inline-block;
-    border-color: inherit;
+  border-bottom-width: 1px;
+  border-bottom-style: dotted;
+  display: inline-block;
+  border-color: inherit;
 }
 
 span.pctholder {
-    width: calc(100% - var(--first-col) - 20px);
-    display: inline-block;
-    position:relative;
-    color: white;
-    vertical-align: sub;
+  width: calc(100% - var(--first-col) - 20px);
+  display: inline-block;
+  position: relative;
+  color: white;
+  vertical-align: sub;
 }
 
 span.featpct {
-    display: inline-block;
-    padding-left: 1px;
-    height: 16px;
+  display: inline-block;
+  padding-left: 1px;
+  height: 16px;
 }
 .featpct--partial {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 span em {
-    font-style: normal;
-    padding-left: 11px;
-    position:absolute;
+  font-style: normal;
+  padding-left: 11px;
+  position: absolute;
 }
 
 .pctholder.lessThan30 em {
-    mix-blend-mode: difference;
-    text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.47);
-    color: hsl(0deg 0% 100%);
-    /* https://www.w3.org/TR/css-color-5/#colorcontrast will be nice in the future :D  */
+  mix-blend-mode: difference;
+  text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.47);
+  color: hsl(0deg 0% 100%);
+  /* https://www.w3.org/TR/css-color-5/#colorcontrast will be nice in the future :D  */
 }
-
 
 ul {
-    font-size: 14px;
+  font-size: 14px;
 }
 
-
-h3 { margin: 30px 0 0;  }
-
-input[type=search] {
-    font-size: 24px;
-    width: 100%;
-    height: 1.2em;
-    line-height: 1.2em;
-    box-sizing: border-box;
+h3 {
+  margin: 30px 0 0;
 }
 
+input[type='search'] {
+  font-size: 24px;
+  width: 100%;
+  height: 1.2em;
+  line-height: 1.2em;
+  box-sizing: border-box;
+}
 
-@media all and (max-width:650px) {
-    /*  Mobile */
-    html  {
+@media all and (max-width: 650px) {
+  /*  Mobile */
+  html {
     background-color: white;
     margin: 0 9px;
-    }
+  }
 
-    input[type=search] {
-        font-size: 1.2em;
-    }
+  input[type='search'] {
+    font-size: 1.2em;
+  }
 
-    ul li {
+  ul li {
     width: 100%;
-    }
+  }
 }
 
-
-@media all and (max-width:345px) {
-    html  {
+@media all and (max-width: 345px) {
+  html {
     margin: 0 2px;
-    }
-
+  }
 }
 
-@media all and (max-width:555px) {
-
-:root {
+@media all and (max-width: 555px) {
+  :root {
     --first-col: 39%;
+  }
 }
-}
-
 
 .is-searching .search {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .is-searching .features h3 {
-    display: none;
+  display: none;
 }
