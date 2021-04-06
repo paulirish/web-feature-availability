@@ -108,6 +108,7 @@ span.pctholder {
     display: inline-block;
     position:relative;
     color: white;
+    vertical-align: sub;
 }
 
 span.featpct {
