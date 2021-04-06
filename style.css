@@ -27,17 +27,7 @@ html {
     color: black;
 }
 
-header {
-    padding: 20px;
-    margin-top: 50px;
-    font-weight: 400;
-}
 
-#addfeatures {
-    clear: both;
-    padding: 0px;
-    margin-top: 30px;
-}
 
 span.loading {
     text-align: center;
@@ -46,14 +36,6 @@ span.loading {
     color: #767676;
 }
 
-header h1 {
-    font-weight: 400;
-    font-size: 4em;
-}
-
-.hero-unit {
-    padding: 30px;
-}
 
 ul {
     margin: 0;
@@ -68,7 +50,7 @@ ul a, ul a:link, ul a:visited {
     text-decoration: none;
 }
 
-#usedFeatures ul li, ul#free li, #features li {
+#features li {
     list-style: none;
     display: block;
     position: relative;
@@ -78,25 +60,19 @@ ul a, ul a:link, ul a:visited {
     --first-col: 240px;
 }
 
-#usedFeatures ul li label, ul#free li label, #features li label {
-    /* padding: 5px; */
+#features li label {
     margin: 0 14px 0 0;
     width: var(--first-col);
     text-align: right;
-    /* transition: all 0.2s ease-in-out; */
     display: inline-block;
     color: #767676;
-    /* overflow: hidden; */
-    /* text-overflow: ellipsis; */
-    /* height: 20px; */
-    /* white-space: nowrap; */
     vertical-align: middle;
 
     word-break: break-word;
     hyphens: auto;
 }
 
-#usedFeatures ul li label a, ul#free li label, #features li label a {
+#features li label a {
     border-bottom-width: 1px;
     border-bottom-style: dotted;
     display: inline-block;
@@ -133,45 +109,11 @@ span em {
     /* https://www.w3.org/TR/css-color-5/#colorcontrast will be nice in the future :D  */
 }
 
-#usedFeatures {
-    display: inline;
-    vertical-align: top;
-}
-
-#usedFeatures ul{
-    display: inline-block;
-}
-
-#usedFeatures ul li label {
-    background-color: hsl(200, 100%, 42%);
-    outline: none;
-    color: white !important;
-}
-
-#usedFeatures ul li input[type=checkbox], ul#free li input[type=checkbox], #features input[type=checkbox] {
-    display: none;
-}
 
 ul {
     font-size: 14px;
 }
 
-input[type=checkbox]:checked + label {
-    background-color: hsl(200, 100%, 42%) !important;
-    box-shadow: inset 0px 0px 3px black;
-}
-
-thead {
-    text-transform: capitalize;
-}
-
-td {
-    padding: 5px;
-}
-
-td.versions {
-    word-break: break-all;
-}
 
 h3 { margin: 30px 0 0;  }
 
@@ -183,10 +125,6 @@ input[type=search] {
     box-sizing: border-box;
 }
 
-#share { color: hsla(90, 100%, 42%, 1); }
-
-#mobileDesktopSplit { float: left; }
-#totalShare { float: left; }
 
 @media all and (max-width:650px) {
     /*  Mobile */
@@ -195,30 +133,13 @@ input[type=search] {
     margin: 0 9px;
     }
 
-    #addfeatures { display: none; }
-
     input[type=search] {
         font-size: 1.2em;
-    }
-
-    #usedFeatures ul {
-    display: block;
     }
 
     ul li {
     width: 100%;
     }
-
-    ul li label  {
-    }
-
-    #mobileDesktopSplit { float: none; }
-    #totalShare { float: none; }
-
-    table { margin: auto; }
-    svg { margin: auto; }
-    #mobileDesktopSplitChart { float: none; margin: auto; text-align: center; }
-    #totalShareChart { float: none; margin: auto; text-align: center; }
 }
 
 
@@ -236,17 +157,6 @@ input[type=search] {
 }
 }
 
-#charts.all .all {
-    display: block;
-}
-
-#charts.desktop .all {
-    display: none;
-}
-
-#charts.mobile .all {
-    display: none;
-}
 
 .is-searching .search {
     margin-bottom: 30px;
