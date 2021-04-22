@@ -162,7 +162,7 @@ var BrowserStats = (function () {
 
   var load = function (type, callback) {
     callback = callback || function () {};
-    fetch('data.json')
+    fetch('https://unpkg.com/caniuse-db/fulldata-json/data-1.0.json')
       .then(function (d) {
         return d.json();
       })

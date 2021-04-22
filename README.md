@@ -8,7 +8,9 @@ i hacked up https://github.com/PaulKinlan/iwanttouse.com real good.
 run a local server and open index.html
 
 
-#### update data
+#### ~update data~ (not needed anymore)
+
+I used to serve the data locally, but now i just hotlink the data from unpkg which always keeps it up to date. 
 
 ```sh
 git -C caniuse pull origin main
