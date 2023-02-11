@@ -192,8 +192,8 @@ document.on('DOMContentLoaded', function () {
           return feat.totalSupport < 98 || cat === 'JS';
         })
         .sort(function (a, b) {
-          return b.avgRecency - a.avgRecency;
-          //return b.totalSupport - a.totalSupport;
+          // return b.avgRecency - a.avgRecency;
+          return b.totalSupport - a.totalSupport;
         })
         .map(function (feat) {
           var adjustedHue = adjustHue(feat.totalSupport);
