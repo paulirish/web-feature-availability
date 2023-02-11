@@ -63,6 +63,7 @@ var BrowserStats = (function () {
     });
 
     browsers.updated = data.updated;
+    browsers.origCaniuseData = data;
 
     callback(browsers);
   };

@@ -28,14 +28,120 @@ var bindFeatureDataList = function (features, required, onItem, sumCurrent) {
   });
 };
 
+
+/**
+ * Computes the weighted-average of the score of the list of items.
+ * stolen from lighthouse
+ * @param {Array<{score: number|null, weight: number}>} items
+ * @return {number|null}
+ */
+function arithmeticMean(items) {
+  // Filter down to just the items with a weight as they have no effect on score
+  items = items.filter(item => item.weight > 0);
+  // If there is 1 null score, return a null average
+  if (items.some(item => item.score === null)) return null;
+
+  const results = items.reduce(
+    (result, item) => {
+      const score = item.score;
+      const weight = item.weight;
+
+      return {
+        weight: result.weight + weight,
+        sum: result.sum + /** @type {number} */ (score) * weight,
+      };
+    },
+    {weight: 0, sum: 0}
+  );
+
+  return results.sum / results.weight || 0;
+}
+
+
 document.on('DOMContentLoaded', function () {
   var deviceType = 'all';
 
   BrowserStats.load(deviceType, function (browsers) {
     var features = browsers.features;
+
+    // Sum total usage per agent, cuz it comes broken down by version
+    const agents = browsers.origCaniuseData.agents;
+    Object.values(agents).forEach(agent => {
+      // just a sum.
+      const totalUsageForAgent = Object.values(agent.usage_global).reduce((prev, curr) => {
+        return prev + curr;
+      }, 0)
+      if (!isFinite(totalUsageForAgent)) {
+        console.warn('invalid totalUsageForAgent', totalUsageForAgent, agent);
+      }
+      agent.usage_global_total = totalUsageForAgent;
+    });
+
     _.each(features, function (itm, idx) {
       itm.id = idx;
     });
+
+
+    /**
+     * Most recent versions first
+     * TODO: computationally this is very innefficient.
+     */
+    function sortBrowserVersions(agentStats, agentName) {
+      // this LUT provides a canonical order for all version ids, incl safari tech preview.. 
+      const agentVersions = agents[agentName].versions; 
+
+      return Object.entries(agentStats).sort(([versAStr, suppA], [versBStr, suppB]) => {
+        const aIndex  = agentVersions.findIndex(v => v === versAStr);
+        const bIndex  = agentVersions.findIndex(v => v === versBStr);
+        return bIndex - aIndex;
+      });
+    }
+
+    function getNewlySupportedRecency(feat) {
+      const allBrowserStats = Object.entries(feat.stats);
+      const recencyPerAgent = allBrowserStats.map(([agentName, agentStats]) => {
+
+        const allAgentVersions = agents[agentName].versions;
+
+        
+        const sorted = sortBrowserVersions(agentStats, agentName);
+        const newlySupportedVersions = sorted.filter(([vers, res], i) => {  
+          const nextOlderVers = sorted[i + 1]; 
+          return (nextOlderVers && nextOlderVers[1]?.startsWith('n') && res.startsWith('y'));
+        });
+        if (newlySupportedVersions.length > 1) {
+          // Theres only 7 instances in the full dataset where this happens. 
+          // This == they added support. then removed it. then added it back.
+          // They all are pretty old and uninteresting (shared web workers in safari, some opera stuff.. etc)
+          // So ill simplify and just take the most recent.
+        }
+        const mostRecentVersionThatSupports = newlySupportedVersions.at(0)?.at(0);
+
+        // If it's unsupported then then we dont include in the weighted avg
+        if (!mostRecentVersionThatSupports) {
+          return {
+            agentName,
+            weight: 0,
+            score: 0,
+          }
+        }
+
+        // In this browser, it is supported.
+        const index = allAgentVersions.findIndex(versStr => versStr === mostRecentVersionThatSupports);
+        // Higher numbers == more recent versions
+        const recencyPct = index /  allAgentVersions.length;
+        return {
+          agentName,
+          score: recencyPct,
+          // If global share is under 1% round down to zero. this is cuz fyrd has a shortcut for old browsers (like android webview)
+          // where he just marks latest version as supporting and theres no real history behind it.
+          // this is kinda unfair but improves data quality.
+          weight: agents[agentName].usage_global_total < 1 ? 0 : agents[agentName].usage_global_total
+        }
+      });
+      const mean = arithmeticMean(recencyPerAgent);
+      return mean;
+    }
 
     function updateShare(requiredFeatures) {
       if (!!requiredFeatures === false) return;
@@ -73,6 +179,8 @@ document.on('DOMContentLoaded', function () {
       const categoryHTML = feats
         .map(feat => {
           feat.totalSupport = feat.usage_perc_a + feat.usage_perc_y;
+          feat.avgRecency = getNewlySupportedRecency(feat);
+
           return feat;
         })
         .filter(feat => {
@@ -84,7 +192,8 @@ document.on('DOMContentLoaded', function () {
           return feat.totalSupport < 98 || cat === 'JS';
         })
         .sort(function (a, b) {
-          return b.totalSupport - a.totalSupport;
+          return b.avgRecency - a.avgRecency;
+          //return b.totalSupport - a.totalSupport;
         })
         .map(function (feat) {
           var adjustedHue = adjustHue(feat.totalSupport);
@@ -111,7 +220,7 @@ document.on('DOMContentLoaded', function () {
                     <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
                 </label>
                 <span class='pctholder ${feat.totalSupport < 30 ? 'lessThan30' : ''}'>
-                    <em>${pct}</em>
+                    <em>${pct} - ${feat.avgRecency.toLocaleString()}</em> 
                     <span class=featpct
                         style='background-color:${color}; width: ${fullSupportPct}%'>
                     </span><span class='featpct featpct--partial'
