@@ -104,7 +104,23 @@ document.on('DOMContentLoaded', function () {
         const allAgentVersions = agents[agentName].versions;
 
         
+
+        // If global share is under 1% round down to zero. this is cuz fyrd has a shortcut for old browsers (like android webview)
+        // where he just marks latest version as supporting and theres no real history behind it.
+        // this is kinda unfair but improves data quality.
+        const weightViaBrowserShare = agents[agentName].usage_global_total < 1 ? 0 : agents[agentName].usage_global_total
+
         const sorted = sortBrowserVersions(agentStats, agentName);
+        const allAreSupported = sorted.every(([vers, res]) => res.startsWith('y'));
+        if (allAreSupported) {
+          // It's always been supported. uninteresting. eg. 'ttf'
+          return {
+            agentName,
+            weight: weightViaBrowserShare,
+            score: 0,
+          };
+        }
+
         const newlySupportedVersions = sorted.filter(([vers, res], i) => {  
           const nextOlderVers = sorted[i + 1]; 
           return (nextOlderVers && nextOlderVers[1]?.startsWith('n') && res.startsWith('y'));
@@ -133,10 +149,7 @@ document.on('DOMContentLoaded', function () {
         return {
           agentName,
           score: recencyPct,
-          // If global share is under 1% round down to zero. this is cuz fyrd has a shortcut for old browsers (like android webview)
-          // where he just marks latest version as supporting and theres no real history behind it.
-          // this is kinda unfair but improves data quality.
-          weight: agents[agentName].usage_global_total < 1 ? 0 : agents[agentName].usage_global_total
+          weight: weightViaBrowserShare,
         }
       });
       const mean = arithmeticMean(recencyPerAgent);
@@ -192,8 +205,8 @@ document.on('DOMContentLoaded', function () {
           return feat.totalSupport < 98 || cat === 'JS';
         })
         .sort(function (a, b) {
-          // return b.avgRecency - a.avgRecency;
-          return b.totalSupport - a.totalSupport;
+          return b.avgRecency - a.avgRecency;
+          // return b.totalSupport - a.totalSupport;
         })
         .map(function (feat) {
           var adjustedHue = adjustHue(feat.totalSupport);
