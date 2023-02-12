@@ -64,6 +64,8 @@ document.on('DOMContentLoaded', function () {
   BrowserStats.load(deviceType, function (browsers) {
     var features = browsers.features;
 
+    updateDates(browsers);
+
     // Sum total usage per agent, cuz it comes broken down by version
     const agents = browsers.origCaniuseData.agents;
 
@@ -110,11 +112,6 @@ document.on('DOMContentLoaded', function () {
     function getNewlySupportedRecency(feat) {
       const allBrowserStats = Object.entries(feat.stats);
       const recencyPerAgent = allBrowserStats.map(([agentName, agentStats]) => {
-
-        const allAgentVersions = agents[agentName].versions;
-
-        
-
         // If global share is under 1% round down to zero. this is cuz fyrd has a shortcut for old browsers (like android webview)
         // where he just marks latest version as supporting and theres no real history behind it.
         // this is kinda unfair but improves data quality.
@@ -202,89 +199,88 @@ document.on('DOMContentLoaded', function () {
     const hasParam99 = new URL(location.href).searchParams.has('99');
 
     var categories = Object.keys(browsers.featureCats).sort();
-    var allHTML = categories.map(function (cat) {
-      const feats = browsers.featureCats[cat];
 
-      const renamedCat = {'JS API': 'Browser APIs'}[cat] || cat;
-      const titleHTML = `</ul><h3>${renamedCat}</h3><ul>`;
-
-      // smush those results onto the objects
-      feats.forEach(function (feat) {
-        feat.share = shareResults[feat.id][0];
-      });
-
-      const categoryHTML = feats
-        .map(feat => {
-          feat.totalSupport = feat.usage_perc_a + feat.usage_perc_y;
-          feat.avgRecency = getNewlySupportedRecency(feat);
-
-          return feat;
-        })
-        .filter(feat => {
-          // Previously i filtered for features with a chrome_id.. (as a proxy for recent stuff?) but it misses out on some stuff...
-          // now we filter for obviously supported stuff (but allowlist 'JS' stuff because _developit said so.)
-          if (hasParamAll) return true;
-
-          return feat.avgRecency > 0.01; // manually picked this threshold
-        })
-        .sort(function (a, b) {
-          return b.avgRecency - a.avgRecency;
-          // return b.totalSupport - a.totalSupport;
-        })
-        .map(function (feat) {
-          var adjustedHue = adjustHue(feat.totalSupport);
-          var color = `hsla(${adjustedHue}, 100%, 42%, 1)`;
-
-          var partialColor = `hsla(${adjustedHue}, 90%, 39.6%, 1)`;
-          const fullSupportPct = feat.usage_perc_y;
-          const partialSupportPct = feat.usage_perc_a;
-
-          var pct = `${escape(
-            feat.totalSupport.toLocaleString(undefined, {maximumFractionDigits: 1})
-          )}%`;
-          var title = feat.title
-            .replace(`CSS3 `, ``)
-            .replace(`CSS `, ``)
-            .replace(`(rounded corners)`, ``);
-
-          totalFeatures++;
-          allfeats.push(feat);
-
-          return `
-            <li data-feature='${feat.id}'>
-                <label style='border-color: ${color}' title='${title} — ${escape(feat.description)}'>
-                    <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
-                </label>
-                <span class='pctholder ${feat.totalSupport < 30 ? 'lessThan30' : ''}'>
-                    <em>${pct} - ${feat.avgRecency.toLocaleString()}</em> 
-                    <span class=featpct
-                        style='background-color:${color}; width: ${fullSupportPct}%'>
-                    </span><span class='featpct featpct--partial'
-                        style='background: repeating-linear-gradient(
-                            -45deg,
-                            ${color},
-                            ${color} 10px,
-                            ${partialColor} 10px,
-                            ${partialColor} 20px
-                          );
-                           width: ${partialSupportPct}%'>
-                    </span>
-                </span>`;
-        })
-        .join('');
-
-      // dont make a heading for an empty section (CSS2)
-      if (!categoryHTML) return '';
-
-      return titleHTML + categoryHTML;
+    const featureToCat = new Map();
+    Object.entries(browsers.featureCats).forEach(([catId, feats]) => {
+      for (const feat of feats) featureToCat.set(feat, catId);
     });
-    $('#features').innerHTML = allHTML.join('');
+    const allFeatures = Array.from(featureToCat.keys());
+
+    
+    var allHTML = allFeatures.map(function (feat) {
+      feat.share = shareResults[feat.id][0];
+      feat.totalSupport = feat.usage_perc_a + feat.usage_perc_y;
+      feat.avgRecency = getNewlySupportedRecency(feat);
+
+      return feat;
+    })
+    .filter(feat => {
+      // Previously i filtered for features with a chrome_id.. (as a proxy for recent stuff?) but it misses out on some stuff...
+      // now we filter for obviously supported stuff (but allowlist 'JS' stuff because _developit said so.)
+      if (hasParamAll) return true;
+
+      return feat.avgRecency > 0.01; // manually picked this threshold
+    })
+    .sort(function (a, b) {
+      return b.avgRecency - a.avgRecency;
+      // return b.totalSupport - a.totalSupport;
+    })
+    .map(function (feat) {
+      var adjustedHue = adjustHue(feat.totalSupport);
+      var color = `hsla(${adjustedHue}, 100%, 42%, 1)`;
+
+      var partialColor = `hsla(${adjustedHue}, 90%, 39.6%, 1)`;
+      const fullSupportPct = feat.usage_perc_y;
+      const partialSupportPct = feat.usage_perc_a;
+
+      var pct = `${escape(
+        feat.totalSupport.toLocaleString(undefined, {maximumFractionDigits: 1})
+      )}%`;
+      var title = feat.title
+        .replace(`CSS3 `, ``)
+        .replace(`CSS `, ``)
+        .replace(`(rounded corners)`, ``);
+
+      totalFeatures++;
+      allfeats.push(feat);
+
+      // const feats = browsers.featureCats[cat];
+
+      // const renamedCat = {'JS API': 'Browser APIs'}[cat] || cat;
+      // const titleHTML = `</ul><h3>${renamedCat}</h3><ul>`;
+      const cat = featureToCat.get(feat);
+
+
+      return `
+        <li data-feature='${feat.id}' data-far="${feat.avgRecency.toLocaleString()}">
+            <label style='border-color: ${color}' title='${title} — ${escape(feat.description)}'>
+                <abbr class="${cat.replace(/\s/g, '')}">${cat}</abbr>
+                <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
+            </label>
+            <span class='pctholder ${feat.totalSupport < 30 ? 'lessThan30' : ''}'>
+                <em>${pct} <b>FAR: ${feat.avgRecency.toLocaleString()}</b></em>
+                <span class=featpct
+                    style='background-color:${color}; width: ${fullSupportPct}%'>
+                </span><span class='featpct featpct--partial'
+                    style='background: repeating-linear-gradient(
+                        -45deg,
+                        ${color},
+                        ${color} 10px,
+                        ${partialColor} 10px,
+                        ${partialColor} 20px
+                      );
+                        width: ${partialSupportPct}%'>
+                </span>
+            </span>`;
+    })
+    .join('');
+
+   
+    $('#features').innerHTML = `<ul>${allHTML}</ul>`;
 
     $('#search').placeholder = `Filter across ${totalFeatures.toLocaleString()} features…`;
 
     setupSearch();
-
-    updateDates(browsers);
   });
 });
 

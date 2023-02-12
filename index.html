@@ -39,7 +39,7 @@ span.loading {
 }
 
 ul {
-  margin: 0;
+  margin: 15px 0 0;
   padding: 0;
 }
 #features {
@@ -75,9 +75,27 @@ ul a, ul a:link, ul a:visited {
 #features li label a {
   border-bottom-width: 1px;
   border-bottom-style: dotted;
-  display: inline-block;
+  display: inline;
   border-color: inherit;
 }
+
+abbr {
+    background: #eaeaea;
+    border-radius: 4px;
+    font-size: 60%;
+    padding: 1px 3px;
+}
+
+abbr.CSS {background-color: #B2DFDB;} 
+abbr.JSAPI {background-color: hsl(261 46% 91% / 1);} 
+abbr.Other { background-color: #EEEEEE; } 
+abbr.JS { background-color: #FFF59D; } 
+abbr.DOM { background-color: #FFCC80; } 
+abbr.Canvas { background-color: #80DEEA; } 
+abbr.Security { background-color: #CE93D8; } 
+abbr.HTML5 { background-color: #FFAB91; } 
+abbr.SVG { background-color: #9FA8DA; } 
+
 
 span.pctholder {
   width: calc(100% - var(--first-col) - 20px);
@@ -101,6 +119,14 @@ span em {
   padding-left: 11px;
   position: absolute;
 }
+span b {
+  opacity: 0;
+  font-weight: normal;
+  font-size: 80%;
+}
+/* li:hover span b {
+  opacity: 1;
+} */
 
 .pctholder.lessThan30 em {
   mix-blend-mode: difference;
@@ -156,14 +182,18 @@ input[type='search'] {
     and <a href="http://gs.statcounter.com/">StatCounter</a> <small>(which, admittedly, <a href="https://twitter.com/_developit/status/1367169135977902082">has its problems</a>)</small>.
 
 
-   <p><small>Obviously, the numbers below only consider native support and not polyfills or other fallback scenarios.</small></p>
+   
+   <p><small>The list is sorted by <em>Feature Activity Recency</em> (FAR): a metric I made up, capturing how recently the overall browser support has improved.</small></p>
 
-   <input id="search" class="search" type="search" placeholder="Filter across 430 features…">
+   <input id="search" class="search" type="search" placeholder="Filter across 327 features…">
+
 
    <div id="features" class="features"><span class=loading>Loading…</span></div>
 
 
    <br>
+
+   <p><small>The numbers above only consider native support and not polyfills or other fallback scenarios.</small></p>
 
    <p>btw- I've filtered out the <em>obviously-supported</em> features (if the features have been around for 10 years).
     If you want to see those ~200 filtered features, reload with <a href="./?all">?all</a></p>
