@@ -171,10 +171,14 @@ document.on('DOMContentLoaded', function () {
           agentName,
           score: recencyPct,
           weight: weightViaBrowserShare,
+          mostRecentVersionThatSupports,
+          mostRecentVersionThatSupportsRls,
         }
       });
+      const maxScore = Math.max(... recencyPerAgent.map(a => a.weight ? a.score : 0));
+      const mostRecent = recencyPerAgent.find(a => a.score === maxScore);
       const mean = arithmeticMean(recencyPerAgent);
-      return mean;
+      return {mean, mostRecent};
     }
 
     function updateShare(requiredFeatures) {
@@ -210,7 +214,9 @@ document.on('DOMContentLoaded', function () {
     var allHTML = allFeatures.map(function (feat) {
       feat.share = shareResults[feat.id][0];
       feat.totalSupport = feat.usage_perc_a + feat.usage_perc_y;
-      feat.avgRecency = getNewlySupportedRecency(feat);
+      const {mean, mostRecent} = getNewlySupportedRecency(feat);
+      feat.avgRecency = mean;
+      feat.mostRecent = mostRecent;
 
       return feat;
     })
@@ -250,6 +256,10 @@ document.on('DOMContentLoaded', function () {
       // const titleHTML = `</ul><h3>${renamedCat}</h3><ul>`;
       const cat = featureToCat.get(feat);
 
+      const recentChangeDateStr = feat.mostRecent.mostRecentVersionThatSupportsRls.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric'});
+      const recentChangeStr = `
+      ${recentChangeDateStr}: ${agents[feat.mostRecent.agentName].browser} ${feat.mostRecent.mostRecentVersionThatSupports} improved support.
+      `.trim();
 
       return `
         <li data-feature='${feat.id}' data-far="${feat.avgRecency.toLocaleString()}">
@@ -258,7 +268,10 @@ document.on('DOMContentLoaded', function () {
                 <a href=http://caniuse.com/#feat=${feat.id}>${title}</a>
             </label>
             <span class='pctholder ${feat.totalSupport < 30 ? 'lessThan30' : ''}'>
-                <em>${pct} <b>FAR: ${feat.avgRecency.toLocaleString()}</b></em>
+                <em>${pct} 
+                  <b>FAR: ${feat.avgRecency.toLocaleString()}</b>
+                  <i>${recentChangeStr}</i>
+                </em>
                 <span class=featpct
                     style='background-color:${color}; width: ${fullSupportPct}%'>
                 </span><span class='featpct featpct--partial'

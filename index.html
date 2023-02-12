@@ -118,12 +118,24 @@ span em {
   font-style: normal;
   padding-left: 11px;
   position: absolute;
+  text-shadow: 0px 0px 2px rgb(50 50 50);
+  color: #eeeeee;
 }
-span b {
+span em b {
   opacity: 0;
   font-weight: normal;
   font-size: 80%;
 }
+span em i {
+  text-shadow: none;
+  font-weight: normal;
+  font-size: 82%;
+  opacity: 0;
+}
+li:hover span em i {
+  opacity: 1;
+}
+
 /* li:hover span b {
   opacity: 1;
 } */
