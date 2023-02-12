@@ -26,15 +26,27 @@ var BrowserStats = (function () {
     };
   };
 
-  var load = function (type, callback) {
+  var load = async function (type, callback) {
     callback = callback || function () {};
-    fetch('https://unpkg.com/caniuse-db/fulldata-json/data-1.0.json')
-      .then(function (d) {
-        return d.json();
-      })
-      .then(function (data) {
-        parse(type, data, callback);
-      });
+
+    const cP = fetch('https://unpkg.com/caniuse-db/fulldata-json/data-1.0.json').then(d => d.json());
+    const aP = fetch('https://unpkg.com/caniuse-lite/data/agents.js').then(r => r.text()).then(agentsTxt => {
+      // lol hack because its CJS.
+      window.module = window.module || {};
+      eval(agentsTxt)
+      return window.module.exports;
+    });
+    const bvP = fetch('https://unpkg.com/caniuse-lite/data/browserVersions.js').then(r => r.text()).then(bvText => {
+      // lol hack because its CJS.
+      window.module = window.module || {};
+      eval(bvText)
+      return window.module.exports;
+    });
+    await Promise.all([cP, aP, bvP]).then(([data, agents, browserVersions]) => {
+      data.liteAgents = agents;
+      data.liteBrowserVersions = browserVersions;
+      parse(type, data, callback);
+    })
   };
 
   var browsers = new Browsers();
@@ -64,6 +76,8 @@ var BrowserStats = (function () {
 
     browsers.updated = data.updated;
     browsers.origCaniuseData = data;
+    browsers.liteAgents = data.liteAgents;
+    browsers.liteBrowserVersions = data.liteBrowserVersions;
 
     callback(browsers);
   };

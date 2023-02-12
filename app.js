@@ -66,6 +66,16 @@ document.on('DOMContentLoaded', function () {
 
     // Sum total usage per agent, cuz it comes broken down by version
     const agents = browsers.origCaniuseData.agents;
+
+    Object.values(browsers.origCaniuseData.agents).forEach(agent => {
+        agent.lite = Object.values(browsers.liteAgents).find(lA => lA.E === agent.browser); 
+        const thing = Object.entries(agent.lite.F).map(([key, date]) => {
+          const versStr = browsers.liteBrowserVersions[key];
+          return [versStr, new Date(date * 1000)];
+        });
+        agent.versionDates = Object.fromEntries(thing);
+    });
+
     Object.values(agents).forEach(agent => {
       // just a sum.
       const totalUsageForAgent = Object.values(agent.usage_global).reduce((prev, curr) => {
@@ -120,10 +130,19 @@ document.on('DOMContentLoaded', function () {
             score: 0,
           };
         }
+        let isPartialBump = false;
 
         const newlySupportedVersions = sorted.filter(([vers, res], i) => {  
           const nextOlderVers = sorted[i + 1]; 
-          return (nextOlderVers && nextOlderVers[1]?.startsWith('n') && res.startsWith('y'));
+          if (!nextOlderVers) return false;
+          const nextOlderVerSupp = nextOlderVers[1];
+          if (nextOlderVerSupp.startsWith('n') && res.startsWith('y')) return true;
+          const partialBump = nextOlderVerSupp.startsWith('a') && res.startsWith('y') || 
+            nextOlderVerSupp.startsWith('n') && res.startsWith('a');
+          if (partialBump && isPartialBump === false) {
+            isPartialBump = true;
+          }
+          return isPartialBump;
         });
         if (newlySupportedVersions.length > 1) {
           // Theres only 7 instances in the full dataset where this happens. 
@@ -132,7 +151,7 @@ document.on('DOMContentLoaded', function () {
           // So ill simplify and just take the most recent.
         }
         const mostRecentVersionThatSupports = newlySupportedVersions.at(0)?.at(0);
-
+        
         // If it's unsupported then then we dont include in the weighted avg
         if (!mostRecentVersionThatSupports) {
           return {
@@ -142,10 +161,15 @@ document.on('DOMContentLoaded', function () {
           }
         }
 
-        // In this browser, it is supported.
-        const index = allAgentVersions.findIndex(versStr => versStr === mostRecentVersionThatSupports);
-        // Higher numbers == more recent versions
-        const recencyPct = index /  allAgentVersions.length;
+        const mostRecentVersionThatSupportsRls = agents[agentName].versionDates[mostRecentVersionThatSupports];
+        
+        const tenYearsAgo = new Date(new Date() - 1000 * 60 * 60 * 24 * 365 * 10);
+        let pctRecentInLastTenYears = (mostRecentVersionThatSupportsRls - tenYearsAgo) / (new Date() - tenYearsAgo);
+        // Dumb but w/e. w/o it text-indent is at the top cuz some recent safari fixed a minor bug.
+        if (isPartialBump && pctRecentInLastTenYears > 0) {
+          pctRecentInLastTenYears /= 2;
+        }
+        const recencyPct = pctRecentInLastTenYears;
         return {
           agentName,
           score: recencyPct,
@@ -200,9 +224,8 @@ document.on('DOMContentLoaded', function () {
           // Previously i filtered for features with a chrome_id.. (as a proxy for recent stuff?) but it misses out on some stuff...
           // now we filter for obviously supported stuff (but allowlist 'JS' stuff because _developit said so.)
           if (hasParamAll) return true;
-          if (hasParam99) return feat.totalSupport >= 98 && cat !== 'JS';
 
-          return feat.totalSupport < 98 || cat === 'JS';
+          return feat.avgRecency > 0.01; // manually picked this threshold
         })
         .sort(function (a, b) {
           return b.avgRecency - a.avgRecency;
