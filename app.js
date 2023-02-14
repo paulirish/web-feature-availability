@@ -256,8 +256,8 @@ document.on('DOMContentLoaded', function () {
       // const titleHTML = `</ul><h3>${renamedCat}</h3><ul>`;
       const cat = featureToCat.get(feat);
 
-      const recentChangeDateStr = feat.mostRecent.mostRecentVersionThatSupportsRls.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric'});
-      const recentChangeStr = `
+      const recentChangeDateStr = feat.mostRecent.mostRecentVersionThatSupportsRls?.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric'});
+      const recentChangeStr = !recentChangeDateStr ? '' : `
       ${recentChangeDateStr}: ${agents[feat.mostRecent.agentName].browser} ${feat.mostRecent.mostRecentVersionThatSupports} improved support.
       `.trim();
 
